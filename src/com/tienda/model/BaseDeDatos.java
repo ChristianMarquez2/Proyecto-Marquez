@@ -5,16 +5,22 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class BaseDeDatos {
-    private static final String URL = "jdbc:mysql://localhost:3306/tienda";
-    private static final String USER = "root";
-    private static final String PASSWORD = "zznk";
+    private static final String URL = "jdbc:mysql://localhost:3306/tienda"; // Ajusta la URL de tu base de datos
+    private static final String USUARIO = "root";
+    private static final String CONTRASENA = "zznk"; // Cambia a la contraseña de tu base de datos
 
-    private static Connection connection;
+    private static Connection conexion;
 
-    public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+    public static void inicializarConexion() {
+        try {
+            conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENA);
+            System.out.println("Conexión a la base de datos establecida.");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return connection;
+    }
+
+    public static Connection getConnection() {
+        return conexion;
     }
 }
