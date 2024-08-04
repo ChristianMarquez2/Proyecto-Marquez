@@ -1,10 +1,8 @@
-package com.tienda.model;
+package com.tienda.GUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class InvoiceWindow extends JFrame {
     private JTable invoiceTable;

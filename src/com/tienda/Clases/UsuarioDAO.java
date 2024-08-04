@@ -1,4 +1,4 @@
-package com.tienda.model;
+package com.tienda.Clases;
 
 import java.sql.*;
 import java.util.ArrayList;

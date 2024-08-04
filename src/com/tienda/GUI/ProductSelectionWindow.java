@@ -1,7 +1,7 @@
-package com.tienda.model;
+package com.tienda.GUI;
 
-import com.tienda.model.Producto;
-import com.tienda.model.ProductoDAO;
+import com.tienda.Clases.Producto;
+import com.tienda.Clases.ProductoDAO;
 
 import javax.swing.*;
 import java.awt.*;

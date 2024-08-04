@@ -1,4 +1,4 @@
-package com.tienda.model;
+package com.tienda.GUI;
 
 import javax.swing.*;
 import java.awt.*;

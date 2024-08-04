@@ -1,4 +1,6 @@
-package com.tienda.model;
+package com.tienda.GUI;
+
+import com.tienda.Clases.UsuarioDAO;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,7 +1,7 @@
 package com.tienda;
 
-import com.tienda.model.BaseDeDatos;
-import com.tienda.model.LoginWindow;
+import com.tienda.Clases.BaseDeDatos;
+import com.tienda.GUI.LoginWindow;
 
 public class Main {
     public static void main(String[] args) {

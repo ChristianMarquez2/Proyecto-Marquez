@@ -1,6 +1,4 @@
-package com.tienda.model;
-
-import com.tienda.model.LoginWindow;
+package com.tienda.GUI;
 
 public class TiendaGUI {
     public static void main(String[] args) {
