@@ -1,7 +1,7 @@
 package com.tienda;
 
-import com.tienda.model.TiendaGUI;
 import com.tienda.model.BaseDeDatos;
+import com.tienda.model.LoginWindow;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,11 +9,9 @@ public class Main {
         BaseDeDatos.inicializarConexion();
 
         // Ejecutar la interfaz gráfica
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                TiendaGUI gui = new TiendaGUI();
-                gui.setVisible(true);
-            }
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.setVisible(true);
         });
     }
 }

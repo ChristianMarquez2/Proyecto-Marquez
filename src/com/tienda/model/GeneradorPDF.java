@@ -10,18 +10,34 @@ import java.io.IOException;
 
 public class GeneradorPDF {
 
+    // Método estático para generar una nota de venta en formato PDF
     public static void generarNotaVenta(Transacción transacción, String rutaArchivo) throws DocumentException, IOException {
+        // Crear un nuevo documento PDF
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(rutaArchivo));
-        document.open();
-        document.add(new Paragraph("Nota de Venta"));
-        document.add(new Paragraph("ID Transacción: " + transacción.getId()));
-        document.add(new Paragraph("Cajero: " + transacción.getCajero().getNombre()));
-        document.add(new Paragraph("Productos:"));
-        for (Producto producto : transacción.getProductos()) {
-            document.add(new Paragraph(" - " + producto.getNombre() + ": " + producto.getPrecio()));
+
+        try {
+            // Obtener una instancia de PdfWriter para el documento
+            PdfWriter.getInstance(document, new FileOutputStream(rutaArchivo));
+
+            // Abrir el documento para la escritura
+            document.open();
+
+            // Agregar contenido al documento
+            document.add(new Paragraph("Nota de Venta"));
+            document.add(new Paragraph("ID Transacción: " + transacción.getId()));
+            document.add(new Paragraph("Cajero: " + transacción.getCajero().getNombre()));
+            document.add(new Paragraph("Productos:"));
+
+            // Agregar cada producto a la nota de venta
+            for (Producto producto : transacción.getProductos()) {
+                document.add(new Paragraph(" - " + producto.getNombre() + ": $" + producto.getPrecio()));
+            }
+
+            // Agregar el total de la transacción
+            document.add(new Paragraph("Total: $" + transacción.getTotal()));
+        } finally {
+            // Asegurarse de cerrar el documento incluso si ocurre una excepción
+            document.close();
         }
-        document.add(new Paragraph("Total: " + transacción.getTotal()));
-        document.close();
     }
 }
