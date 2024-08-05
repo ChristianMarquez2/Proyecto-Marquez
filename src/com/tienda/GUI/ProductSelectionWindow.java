@@ -5,6 +5,8 @@ import com.tienda.Clases.ProductoDAO;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class ProductSelectionWindow extends JFrame {
     private JComboBox<String> modeloComboBox;
     private JTextArea productoArea;
     private ProductoDAO productoDAO;
+    private JButton añadirCarritoButton;
+    private Producto productoSeleccionado;
 
     public ProductSelectionWindow() {
         setTitle("Selección de Productos");
@@ -51,6 +55,16 @@ public class ProductSelectionWindow extends JFrame {
         productoArea.setWrapStyleWord(true); // Ajustar palabras al final de línea
         panel.add(new JScrollPane(productoArea), BorderLayout.CENTER);
 
+        // Botón para añadir al carrito
+        añadirCarritoButton = new JButton("Añadir al Carrito");
+        añadirCarritoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                añadirAlCarrito();
+            }
+        });
+        panel.add(añadirCarritoButton, BorderLayout.SOUTH);
+
         add(panel);
 
         // Cargar modelos al iniciar
@@ -87,13 +101,33 @@ public class ProductSelectionWindow extends JFrame {
                 productoArea.setText("No hay productos disponibles para el modelo seleccionado.");
             } else {
                 for (Producto producto : productos) {
-                    productoArea.append(producto.getNombre() + " - $" + producto.getPrecio() + "\n");
+                    productoArea.append("Nombre: " + producto.getNombre() + "\n");
+                    productoArea.append("Modelo: " + producto.getModelo() + "\n");
+                    productoArea.append("Precio: $" + producto.getPrecio() + "\n");
+                    productoArea.append("Stock: " + producto.getStock() + "\n\n");
+                    // Guardar el producto seleccionado
+                    if (producto.getModelo().equals(modeloSeleccionado)) {
+                        productoSeleccionado = producto;
+                    }
                 }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al obtener productos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void añadirAlCarrito() {
+        if (productoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un producto.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        // Aquí puedes agregar el producto al carrito de compras
+        JOptionPane.showMessageDialog(this, "Producto añadido al carrito:\n" +
+                "Nombre: " + productoSeleccionado.getNombre() + "\n" +
+                "Modelo: " + productoSeleccionado.getModelo() + "\n" +
+                "Precio: $" + productoSeleccionado.getPrecio() + "\n" +
+                "Stock: " + productoSeleccionado.getStock(), "Carrito", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private int obtenerMarcaId(String marcaNombre) {
@@ -111,5 +145,11 @@ public class ProductSelectionWindow extends JFrame {
             default:
                 return -1;
         }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new ProductSelectionWindow().setVisible(true);
+        });
     }
 }

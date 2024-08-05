@@ -6,49 +6,6 @@ import java.util.List;
 
 public class ProductoDAO {
 
-    // Método para agregar un nuevo producto a la base de datos
-    public void agregarProducto(Producto producto) throws SQLException {
-        String query = "INSERT INTO productos (nombre, precio, stock, imagen, marca_id, modelo) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = BaseDeDatos.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, producto.getNombre());
-            stmt.setDouble(2, producto.getPrecio());
-            stmt.setInt(3, producto.getStock());
-            stmt.setString(4, producto.getImagenPath());
-            stmt.setInt(5, producto.getMarcaId());
-            stmt.setString(6, producto.getModelo());
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace(); // Manejo básico de excepciones
-            throw e; // Re-lanzar la excepción para que el llamador pueda manejarla
-        }
-    }
-
-    // Método para obtener todos los productos de la base de datos
-    public List<Producto> obtenerProductos() throws SQLException {
-        List<Producto> productos = new ArrayList<>();
-        String query = "SELECT * FROM productos";
-        try (Connection conn = BaseDeDatos.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            while (rs.next()) {
-                productos.add(new Producto(
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getDouble("precio"),
-                        rs.getInt("stock"),
-                        rs.getString("imagen"),
-                        rs.getInt("marca_id"),
-                        rs.getString("modelo")
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
-        }
-        return productos;
-    }
-
     // Método para obtener productos por marca
     public List<Producto> obtenerProductosPorMarca(int marcaId) throws SQLException {
         List<Producto> productos = new ArrayList<>();
@@ -101,6 +58,24 @@ public class ProductoDAO {
             throw e;
         }
         return productos;
+    }
+
+    // Método para agregar un nuevo producto a la base de datos
+    public void agregarProducto(Producto producto) throws SQLException {
+        String query = "INSERT INTO productos (nombre, precio, stock, imagen, marca_id, modelo) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, producto.getNombre());
+            stmt.setDouble(2, producto.getPrecio());
+            stmt.setInt(3, producto.getStock());
+            stmt.setString(4, producto.getImagenPath());
+            stmt.setInt(5, producto.getMarcaId());
+            stmt.setString(6, producto.getModelo());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     // Método para actualizar un producto existente
@@ -175,4 +150,29 @@ public class ProductoDAO {
         }
         return productos;
     }
+    // Método para obtener todos los productos de la base de datos
+    public List<Producto> obtenerProductos() throws SQLException {
+        List<Producto> productos = new ArrayList<>();
+        String query = "SELECT * FROM productos";
+        try (Connection conn = BaseDeDatos.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                productos.add(new Producto(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getDouble("precio"),
+                        rs.getInt("stock"),
+                        rs.getString("imagen"),
+                        rs.getInt("marca_id"),
+                        rs.getString("modelo")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return productos;
+    }
+
 }

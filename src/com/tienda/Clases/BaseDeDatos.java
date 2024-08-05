@@ -9,18 +9,7 @@ public class BaseDeDatos {
     private static final String USUARIO = "root";
     private static final String CONTRASENA = "zznk";
 
-    private static Connection conexion;
-
-    public static void inicializarConexion() {
-        try {
-            conexion = DriverManager.getConnection(URL, USUARIO, CONTRASENA);
-            System.out.println("Conexión a la base de datos establecida.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Connection getConnection() {
-        return conexion;
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USUARIO, CONTRASENA);
     }
 }
