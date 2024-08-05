@@ -1,10 +1,21 @@
 package com.tienda.GUI;
 
+import com.itextpdf.text.DocumentException;
+import com.tienda.Clases.GeneradorPDF;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class BillingWindow extends JFrame {
-    public BillingWindow() {
+    private JTable productosTable;
+    private DefaultTableModel productosTableModel;
+    private JTextField nombreClienteField, direccionField, telefonoField, emailField, nitCiField;
+
+    public BillingWindow(Object[][] cartData, String total) {
         setTitle("Facturación");
         setSize(600, 400);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -18,23 +29,23 @@ public class BillingWindow extends JFrame {
         clientePanel.setBorder(BorderFactory.createTitledBorder("Datos del Cliente"));
 
         clientePanel.add(new JLabel("Nombre del Cliente:"));
-        JTextField nombreClienteField = new JTextField();
+        nombreClienteField = new JTextField();
         clientePanel.add(nombreClienteField);
 
         clientePanel.add(new JLabel("Dirección:"));
-        JTextField direccionField = new JTextField();
+        direccionField = new JTextField();
         clientePanel.add(direccionField);
 
         clientePanel.add(new JLabel("Teléfono:"));
-        JTextField telefonoField = new JTextField();
+        telefonoField = new JTextField();
         clientePanel.add(telefonoField);
 
         clientePanel.add(new JLabel("Email:"));
-        JTextField emailField = new JTextField();
+        emailField = new JTextField();
         clientePanel.add(emailField);
 
         clientePanel.add(new JLabel("NIT/CI:"));
-        JTextField nitCiField = new JTextField();
+        nitCiField = new JTextField();
         clientePanel.add(nitCiField);
 
         mainPanel.add(clientePanel, BorderLayout.NORTH);
@@ -43,9 +54,15 @@ public class BillingWindow extends JFrame {
         JPanel productosPanel = new JPanel(new BorderLayout());
         productosPanel.setBorder(BorderFactory.createTitledBorder("Productos y Precios"));
 
-        JTextArea productosArea = new JTextArea();
-        productosArea.setEditable(false);
-        productosPanel.add(new JScrollPane(productosArea), BorderLayout.CENTER);
+        productosTableModel = new DefaultTableModel(new Object[]{"Producto", "Precio", "Cantidad"}, 0);
+        productosTable = new JTable(productosTableModel);
+        JScrollPane scrollPane = new JScrollPane(productosTable);
+        productosPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Agregar datos del carrito a la tabla de productos
+        for (Object[] row : cartData) {
+            productosTableModel.addRow(row);
+        }
 
         mainPanel.add(productosPanel, BorderLayout.CENTER);
 
@@ -63,15 +80,40 @@ public class BillingWindow extends JFrame {
         add(mainPanel);
 
         // Acción del botón "Generar Factura"
-        generarFacturaButton.addActionListener(e -> {
-            // Implementar la lógica para generar la factura
-            JOptionPane.showMessageDialog(this, "Factura generada exitosamente", "Facturación", JOptionPane.INFORMATION_MESSAGE);
+        generarFacturaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    // Generar el PDF de la factura
+                    String rutaArchivo = "Factura.pdf"; // Puedes cambiar la ruta si es necesario
+                    GeneradorPDF.generarFactura(
+                            nombreClienteField.getText(),
+                            direccionField.getText(),
+                            telefonoField.getText(),
+                            emailField.getText(), // Agrega el email si es necesario
+                            nitCiField.getText(), // Agrega el NIT/CI si es necesario
+                            cartData,
+                            Double.parseDouble(total.replace("Total: $", "").replace(",", ".")), // Reemplaza "," con "."
+                            rutaArchivo
+                    );
+                    JOptionPane.showMessageDialog(BillingWindow.this, "Factura generada exitosamente en " + rutaArchivo, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException | DocumentException | NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(BillingWindow.this, "Error al generar la factura", "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
         });
 
         // Acción del botón "Cancelar"
-        cancelarButton.addActionListener(e -> {
-            // Implementar la lógica para cancelar la facturación
-            dispose(); // Cierra la ventana
+        cancelarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Cierra la ventana
+            }
         });
+    }
+
+    public BillingWindow() {
+
     }
 }
