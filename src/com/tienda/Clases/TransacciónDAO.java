@@ -1,4 +1,3 @@
-
 package com.tienda.Clases;
 
 import java.sql.*;
@@ -8,8 +7,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class TransacciónDAO {
 
-
-    // Método para encriptar la contraseña antes de almacenarla
+    // Método para encriptar la contraseña antes de almacenarla (considerar mover a una clase de usuario)
     public void agregarUsuario(Usuario usuario) throws SQLException {
         String hashedPassword = BCrypt.hashpw(usuario.getContraseña(), BCrypt.gensalt());
         String query = "INSERT INTO usuarios (nombre, rol, contraseña) VALUES (?, ?, ?)";
@@ -22,7 +20,7 @@ public class TransacciónDAO {
         }
     }
 
-    // Método para verificar la contraseña durante el login
+    // Método para verificar la contraseña durante el login (considerar mover a una clase de usuario)
     public boolean verificarContraseña(String nombreUsuario, String contraseña) throws SQLException {
         String query = "SELECT contraseña FROM usuarios WHERE nombre = ?";
         try (Connection conn = BaseDeDatos.getConnection();
@@ -93,7 +91,6 @@ public class TransacciónDAO {
         return transacciones;
     }
 
-
     // Método para obtener una transacción por ID
     public Transacción obtenerTransacciónPorId(int transacciónId) throws SQLException {
         String query = "SELECT * FROM transacciones WHERE id = ?";
@@ -119,7 +116,6 @@ public class TransacciónDAO {
         return null; // o lanzar una excepción si no se encuentra
     }
 
-
     // Método privado para obtener un Cajero por ID
     private Cajero obtenerCajeroPorId(int cajeroId) throws SQLException {
         String query = "SELECT * FROM usuarios WHERE id = ? AND rol = 'Cajero'";
@@ -140,7 +136,6 @@ public class TransacciónDAO {
         }
         return null; // o lanzar una excepción si no se encuentra
     }
-
 
     // Método privado para obtener productos asociados a una transacción
     private List<Producto> obtenerProductosPorTransacción(int transacciónId) throws SQLException {

@@ -1,11 +1,19 @@
 package com.tienda.GUI;
 
+import com.tienda.Clases.ConfiguracionDAO;
+import com.tienda.Clases.DatabaseUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class SettingsWindow extends JFrame {
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+
     public SettingsWindow() {
         setTitle("Configuración");
         setSize(600, 400);
@@ -18,9 +26,9 @@ public class SettingsWindow extends JFrame {
 
         // Ejemplo de configuraciones
         JLabel usernameLabel = new JLabel("Nombre de Usuario:");
-        JTextField usernameField = new JTextField();
+        usernameField = new JTextField();
         JLabel passwordLabel = new JLabel("Contraseña:");
-        JPasswordField passwordField = new JPasswordField();
+        passwordField = new JPasswordField();
         JButton saveButton = new JButton("Guardar");
 
         settingsPanel.add(usernameLabel);
@@ -33,11 +41,49 @@ public class SettingsWindow extends JFrame {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Acción para guardar configuración
-                JOptionPane.showMessageDialog(null, "Configuración guardada.");
+                guardarConfiguracion();
             }
         });
 
         add(settingsPanel);
+    }
+
+    private void guardarConfiguracion() {
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
+
+        // Validar entradas
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Crear una conexión a la base de datos
+        Connection connection = null;
+        try {
+            connection = DatabaseUtils.getConnection(); // Implementa esta función para obtener la conexión
+            ConfiguracionDAO configuracionDAO = new ConfiguracionDAO(connection);
+
+            // Guardar la configuración
+            boolean savedSuccessfully = configuracionDAO.guardarConfiguracion(username, password);
+
+            if (savedSuccessfully) {
+                JOptionPane.showMessageDialog(this, "Configuración guardada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al guardar la configuración.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Cerrar la conexión
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

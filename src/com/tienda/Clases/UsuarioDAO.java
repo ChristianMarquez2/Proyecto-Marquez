@@ -3,6 +3,7 @@ package com.tienda.Clases;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UsuarioDAO {
 
@@ -14,7 +15,7 @@ public class UsuarioDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     String contraseñaAlmacenada = rs.getString("contraseña");
-                    return contraseña.equals(contraseñaAlmacenada);
+                    return BCrypt.checkpw(contraseña, contraseñaAlmacenada);
                 }
             }
         }
@@ -22,11 +23,13 @@ public class UsuarioDAO {
     }
 
     public void agregarUsuario(Usuario usuario) throws SQLException {
-        String query = "INSERT INTO usuarios (nombre, rol) VALUES (?, ?)";
+        String hashedPassword = BCrypt.hashpw(usuario.getContraseña(), BCrypt.gensalt());
+        String query = "INSERT INTO usuarios (nombre, rol, contraseña) VALUES (?, ?, ?)";
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, usuario.getNombre());
             stmt.setString(2, usuario.getRol());
+            stmt.setString(3, hashedPassword);
             stmt.executeUpdate();
         }
     }
@@ -76,33 +79,34 @@ public class UsuarioDAO {
         }
         return usuarios;
     }
+
     public Usuario autenticarUsuario(String nombre, String contraseña) throws SQLException {
-        String query = "SELECT * FROM usuarios WHERE nombre = ? AND contraseña = ?";
+        String query = "SELECT * FROM usuarios WHERE nombre = ?";
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, nombre);
-            stmt.setString(2, contraseña);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String rol = rs.getString("rol");
-                    if (rol.equals("Administrador")) {
-                        return new Administrador(
-                                rs.getInt("id"),
-                                rs.getString("nombre"),
-                                rs.getString("contraseña")
-                        );
-                    } else if (rol.equals("Cajero")) {
-                        return new Cajero(
-                                rs.getInt("id"),
-                                rs.getString("nombre"),
-                                rs.getString("contraseña")
-                        );
+                    String contraseñaAlmacenada = rs.getString("contraseña");
+                    if (BCrypt.checkpw(contraseña, contraseñaAlmacenada)) {
+                        String rol = rs.getString("rol");
+                        if (rol.equals("Administrador")) {
+                            return new Administrador(
+                                    rs.getInt("id"),
+                                    rs.getString("nombre"),
+                                    rs.getString("contraseña")
+                            );
+                        } else if (rol.equals("Cajero")) {
+                            return new Cajero(
+                                    rs.getInt("id"),
+                                    rs.getString("nombre"),
+                                    rs.getString("contraseña")
+                            );
+                        }
                     }
                 }
             }
         }
         return null; // Usuario o contraseña incorrectos
     }
-
-
 }

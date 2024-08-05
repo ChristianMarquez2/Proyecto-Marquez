@@ -42,7 +42,11 @@ public class Producto {
     }
 
     public void setPrecio(double precio) {
-        this.precio = precio;
+        if (precio >= 0) {
+            this.precio = precio;
+        } else {
+            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        }
     }
 
     public int getStock() {
@@ -50,7 +54,11 @@ public class Producto {
     }
 
     public void setStock(int stock) {
-        this.stock = stock;
+        if (stock >= 0) {
+            this.stock = stock;
+        } else {
+            throw new IllegalArgumentException("El stock no puede ser negativo.");
+        }
     }
 
     public String getImagenPath() {

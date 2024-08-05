@@ -18,6 +18,9 @@ public class ProductoDAO {
             stmt.setInt(5, producto.getMarcaId());
             stmt.setString(6, producto.getModelo());
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace(); // Manejo básico de excepciones
+            throw e; // Re-lanzar la excepción para que el llamador pueda manejarla
         }
     }
 
@@ -39,6 +42,9 @@ public class ProductoDAO {
                         rs.getString("modelo")
                 ));
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         }
         return productos;
     }
@@ -63,6 +69,9 @@ public class ProductoDAO {
                     ));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         }
         return productos;
     }
@@ -87,6 +96,9 @@ public class ProductoDAO {
                     ));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         }
         return productos;
     }
@@ -99,11 +111,14 @@ public class ProductoDAO {
             stmt.setString(1, producto.getNombre());
             stmt.setDouble(2, producto.getPrecio());
             stmt.setInt(3, producto.getStock());
-            stmt.setString(4, producto.getImagenPath()); // Cambia 'imagen' por el nombre correcto del campo en tu base de datos
+            stmt.setString(4, producto.getImagenPath());
             stmt.setInt(5, producto.getMarcaId());
             stmt.setString(6, producto.getModelo());
             stmt.setInt(7, producto.getId());
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
@@ -115,6 +130,9 @@ public class ProductoDAO {
             stmt.setInt(1, nuevoStock);
             stmt.setInt(2, productoId);
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
@@ -125,6 +143,9 @@ public class ProductoDAO {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, productoId);
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
@@ -148,6 +169,9 @@ public class ProductoDAO {
                     ));
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
         }
         return productos;
     }

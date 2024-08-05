@@ -37,7 +37,9 @@ public class GeneradorPDF {
             document.add(new Paragraph("Total: $" + transacción.getTotal()));
         } finally {
             // Asegurarse de cerrar el documento incluso si ocurre una excepción
-            document.close();
+            if (document.isOpen()) {
+                document.close();
+            }
         }
     }
 }

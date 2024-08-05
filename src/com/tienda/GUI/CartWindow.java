@@ -12,21 +12,21 @@ public class CartWindow extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel para los elementos del carrito
-        JPanel cartPanel = new JPanel();
-        cartPanel.setLayout(new BorderLayout());
+        // Panel principal del carrito
+        JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Tabla para mostrar los productos en el carrito
+        // Panel para la tabla del carrito
+        JPanel tablePanel = new JPanel(new BorderLayout());
         String[] columnNames = {"Producto", "Cantidad", "Precio"};
         Object[][] data = {}; // Puedes cargar datos reales aquí
         JTable cartTable = new JTable(data, columnNames);
         JScrollPane scrollPane = new JScrollPane(cartTable);
-        cartPanel.add(scrollPane, BorderLayout.CENTER);
+        tablePanel.add(scrollPane, BorderLayout.CENTER);
+
+        mainPanel.add(tablePanel, BorderLayout.CENTER);
 
         // Panel para el total y botón de pago
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JLabel totalLabel = new JLabel("Total: $0.00");
         bottomPanel.add(totalLabel);
 
@@ -40,8 +40,8 @@ public class CartWindow extends JFrame {
         });
         bottomPanel.add(checkoutButton);
 
-        cartPanel.add(bottomPanel, BorderLayout.SOUTH);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        add(cartPanel);
+        add(mainPanel);
     }
 }

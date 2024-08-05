@@ -47,10 +47,13 @@ public class ProductSelectionWindow extends JFrame {
         // Área de texto para mostrar productos
         productoArea = new JTextArea();
         productoArea.setEditable(false);
+        productoArea.setLineWrap(true); // Ajustar texto a la línea
+        productoArea.setWrapStyleWord(true); // Ajustar palabras al final de línea
         panel.add(new JScrollPane(productoArea), BorderLayout.CENTER);
 
         add(panel);
 
+        // Cargar modelos al iniciar
         actualizarModelos();
     }
 
@@ -64,8 +67,12 @@ public class ProductSelectionWindow extends JFrame {
             for (Producto producto : productos) {
                 modeloComboBox.addItem(producto.getModelo());
             }
+            if (modeloComboBox.getItemCount() == 0) {
+                modeloComboBox.addItem("No hay modelos disponibles");
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al obtener modelos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -76,11 +83,16 @@ public class ProductSelectionWindow extends JFrame {
         // Mostrar productos según el modelo seleccionado
         try {
             List<Producto> productos = productoDAO.obtenerProductosPorModelo(modeloSeleccionado);
-            for (Producto producto : productos) {
-                productoArea.append(producto.getNombre() + " - $" + producto.getPrecio() + "\n");
+            if (productos.isEmpty()) {
+                productoArea.setText("No hay productos disponibles para el modelo seleccionado.");
+            } else {
+                for (Producto producto : productos) {
+                    productoArea.append(producto.getNombre() + " - $" + producto.getPrecio() + "\n");
+                }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al obtener productos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

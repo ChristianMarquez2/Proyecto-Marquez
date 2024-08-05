@@ -8,16 +8,20 @@ public class Cajero extends Usuario {
         super(id, nombre, contraseña, "Cajero");
     }
 
-    // Métodos específicos del cajero
-
     // Método para registrar una nueva transacción
     public void registrarTransacción(List<Producto> productos) {
         TransacciónDAO transacciónDAO = new TransacciónDAO();
+        ProductoDAO productoDAO = new ProductoDAO();
         double total = calcularTotal(productos);
         Transacción transacción = new Transacción(0, productos, total, this); // ID generado automáticamente
 
         try {
             transacciónDAO.agregarTransacción(transacción);
+            // Reducir stock de los productos
+            for (Producto producto : productos) {
+                producto.setStock(producto.getStock() - 1); // Suponiendo que se reduce el stock en 1 por cada producto comprado
+                productoDAO.actualizarProducto(producto);
+            }
             System.out.println("Transacción registrada con éxito.");
         } catch (SQLException e) {
             e.printStackTrace();
