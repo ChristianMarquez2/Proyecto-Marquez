@@ -3,7 +3,6 @@ package com.tienda.Clases;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class UsuarioDAO {
 
@@ -16,7 +15,7 @@ public class UsuarioDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     String contraseñaAlmacenada = rs.getString("contraseña");
-                    return BCrypt.checkpw(contraseña, contraseñaAlmacenada);
+                    return contraseña.equals(contraseñaAlmacenada);
                 }
             }
         }
@@ -25,13 +24,12 @@ public class UsuarioDAO {
 
     // Método para agregar un usuario
     public void agregarUsuario(Usuario usuario) throws SQLException {
-        String hashedPassword = BCrypt.hashpw(usuario.getContraseña(), BCrypt.gensalt());
         String query = "INSERT INTO usuarios (nombre, rol, contraseña) VALUES (?, ?, ?)";
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, usuario.getNombre());
             stmt.setString(2, usuario.getRol());
-            stmt.setString(3, hashedPassword);
+            stmt.setString(3, usuario.getContraseña());
             stmt.executeUpdate();
         }
     }
@@ -72,7 +70,7 @@ public class UsuarioDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     String contraseñaAlmacenada = rs.getString("contraseña");
-                    if (BCrypt.checkpw(contraseña, contraseñaAlmacenada)) {
+                    if (contraseña.equals(contraseñaAlmacenada)) {
                         String rol = rs.getString("rol");
                         if (rol.equals("Administrador")) {
                             return new Administrador(
@@ -101,8 +99,7 @@ public class UsuarioDAO {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, usuario.getNombre());
             stmt.setString(2, usuario.getRol());
-            String hashedPassword = BCrypt.hashpw(usuario.getContraseña(), BCrypt.gensalt());
-            stmt.setString(3, hashedPassword);
+            stmt.setString(3, usuario.getContraseña());
             stmt.setInt(4, usuario.getId());
             stmt.executeUpdate();
         }
