@@ -7,6 +7,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class UsuarioDAO {
 
+    // Método para verificar credenciales de usuario
     public boolean verificarCredenciales(String nombre, String contraseña) throws SQLException {
         String query = "SELECT contraseña FROM usuarios WHERE nombre = ?";
         try (Connection conn = BaseDeDatos.getConnection();
@@ -22,6 +23,7 @@ public class UsuarioDAO {
         return false;
     }
 
+    // Método para agregar un usuario
     public void agregarUsuario(Usuario usuario) throws SQLException {
         String hashedPassword = BCrypt.hashpw(usuario.getContraseña(), BCrypt.gensalt());
         String query = "INSERT INTO usuarios (nombre, rol, contraseña) VALUES (?, ?, ?)";
@@ -34,26 +36,7 @@ public class UsuarioDAO {
         }
     }
 
-    public void actualizarUsuario(Usuario usuario) throws SQLException {
-        String query = "UPDATE usuarios SET nombre = ?, rol = ? WHERE id = ?";
-        try (Connection conn = BaseDeDatos.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getRol());
-            stmt.setInt(3, usuario.getId());
-            stmt.executeUpdate();
-        }
-    }
-
-    public void eliminarUsuario(int usuarioId) throws SQLException {
-        String query = "DELETE FROM usuarios WHERE id = ?";
-        try (Connection conn = BaseDeDatos.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, usuarioId);
-            stmt.executeUpdate();
-        }
-    }
-
+    // Método para obtener todos los usuarios
     public List<Usuario> obtenerUsuarios() throws SQLException {
         List<Usuario> usuarios = new ArrayList<>();
         String query = "SELECT * FROM usuarios";
@@ -80,6 +63,7 @@ public class UsuarioDAO {
         return usuarios;
     }
 
+    // Método para autenticar un usuario
     public Usuario autenticarUsuario(String nombre, String contraseña) throws SQLException {
         String query = "SELECT * FROM usuarios WHERE nombre = ?";
         try (Connection conn = BaseDeDatos.getConnection();
@@ -108,5 +92,29 @@ public class UsuarioDAO {
             }
         }
         return null; // Usuario o contraseña incorrectos
+    }
+
+    // Método para actualizar un usuario
+    public void actualizarUsuario(Usuario usuario) throws SQLException {
+        String query = "UPDATE usuarios SET nombre = ?, rol = ?, contraseña = ? WHERE id = ?";
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, usuario.getNombre());
+            stmt.setString(2, usuario.getRol());
+            String hashedPassword = BCrypt.hashpw(usuario.getContraseña(), BCrypt.gensalt());
+            stmt.setString(3, hashedPassword);
+            stmt.setInt(4, usuario.getId());
+            stmt.executeUpdate();
+        }
+    }
+
+    // Método para eliminar un usuario
+    public void eliminarUsuario(int id) throws SQLException {
+        String query = "DELETE FROM usuarios WHERE id = ?";
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
     }
 }
