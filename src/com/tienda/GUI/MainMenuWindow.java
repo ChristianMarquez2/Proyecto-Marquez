@@ -8,12 +8,6 @@ import java.awt.event.ActionListener;
 public class MainMenuWindow extends JFrame {
     private String userRole;
     private JPanel navigationPanel;
-    private JButton button1;
-    private JButton button2;
-    private JButton button3;
-    private JButton button4;
-    private JButton button5;
-    private JButton button6;
     private JButton productButton;
     private JButton billingButton;
     private JButton cartButton;
@@ -22,6 +16,7 @@ public class MainMenuWindow extends JFrame {
     private JButton logoutButton;
     private JTextPane infoTextPane;
     private JLabel logoLabel;
+    private CartWindow cartWindow; // Añadido
 
     public MainMenuWindow(String userRole) {
         this.userRole = userRole;
@@ -30,6 +25,9 @@ public class MainMenuWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+
+        // Inicializa la ventana del carrito
+        cartWindow = new CartWindow(); // Crear una instancia de CartWindow
 
         // Logo
         ImageIcon logoIcon = new ImageIcon("path/to/your/logo.png"); // Ruta al archivo del logo
@@ -94,13 +92,14 @@ public class MainMenuWindow extends JFrame {
                 // Aquí puedes agregar la lógica para cada botón
                 switch (text) {
                     case "Productos":
-                        new ProductSelectionWindow().setVisible(true);
+                        // Pasa la instancia de CartWindow al constructor de ProductSelectionWindow
+                        new ProductSelectionWindow(cartWindow).setVisible(true);
                         break;
                     case "Facturación":
                         new BillingWindow().setVisible(true);
                         break;
                     case "Carrito":
-                        new CartWindow().setVisible(true);
+                        cartWindow.setVisible(true); // Muestra la ventana del carrito existente
                         break;
                     case "Reportes":
                         new ReportsWindow().setVisible(true);
@@ -115,11 +114,6 @@ public class MainMenuWindow extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new MainMenuWindow("Admin").setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new MainMenuWindow("Admin").setVisible(true));
     }
 }

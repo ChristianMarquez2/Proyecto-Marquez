@@ -1,6 +1,8 @@
 package com.tienda.GUI;
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import javax.swing.*;
@@ -10,25 +12,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+
+
 
 
 public class InvoiceWindow extends JFrame {
     private JTable invoiceTable;
     private DefaultTableModel tableModel;
+    private JTextField txtTotal;
 
-    public InvoiceWindow() {
+    public InvoiceWindow(Object[][] cartData, String total) {
         setTitle("Generar Factura");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Layout principal
         setLayout(new BorderLayout());
 
         // Panel de datos del cliente
-        JPanel customerPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel customerPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        customerPanel.setBorder(BorderFactory.createTitledBorder("Datos del Cliente"));
         customerPanel.add(new JLabel("Nombre del Cliente:"));
         JTextField txtCustomerName = new JTextField();
         customerPanel.add(txtCustomerName);
@@ -44,20 +48,21 @@ public class InvoiceWindow extends JFrame {
         add(customerPanel, BorderLayout.NORTH);
 
         // Panel de tabla de factura
-        tableModel = new DefaultTableModel(new Object[]{"Producto", "Precio", "Cantidad"}, 0);
+        tableModel = new DefaultTableModel(new Object[]{"Producto", "Precio Unitario", "Cantidad", "Total"}, 0);
         invoiceTable = new JTable(tableModel);
-        add(new JScrollPane(invoiceTable), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(invoiceTable);
+        add(scrollPane, BorderLayout.CENTER);
 
         // Panel de totales
         JPanel totalsPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        totalsPanel.setBorder(BorderFactory.createTitledBorder("Totales"));
         totalsPanel.add(new JLabel("Total:"));
-        JTextField txtTotal = new JTextField();
+        txtTotal = new JTextField();
+        txtTotal.setEditable(false);
+        txtTotal.setText(total); // Mostrar el total recibido
         totalsPanel.add(txtTotal);
 
-        totalsPanel.add(new JLabel("IVA:"));
-        JTextField txtVAT = new JTextField();
-        totalsPanel.add(txtVAT);
-
+        // Agregar panel de totales a la parte inferior
         add(totalsPanel, BorderLayout.SOUTH);
 
         // Panel de botones
@@ -70,13 +75,16 @@ public class InvoiceWindow extends JFrame {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
+        // Rellenar la tabla con los datos del carrito
+        populateTable(cartData);
+
         // Acción del botón "Generar Factura"
         btnGenerateInvoice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     // Generar el PDF de la factura
-                    generatePDF(txtCustomerName.getText(), txtAddress.getText(), txtPhone.getText(), txtTotal.getText(), txtVAT.getText());
+                    generatePDF(txtCustomerName.getText(), txtAddress.getText(), txtPhone.getText(), txtTotal.getText());
                     JOptionPane.showMessageDialog(InvoiceWindow.this, "Factura generada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(InvoiceWindow.this, "Error al generar la factura", "Error", JOptionPane.ERROR_MESSAGE);
@@ -94,13 +102,13 @@ public class InvoiceWindow extends JFrame {
         });
     }
 
-    private void generatePDF(String customerName, String address, String phone, String total, String vat) throws DocumentException, IOException {
+    private void generatePDF(String customerName, String address, String phone, String total) throws DocumentException, IOException {
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream("Factura.pdf"));
         document.open();
 
         // Agregar título
-        document.add(new Paragraph("Factura", com.itextpdf.text.FontFactory.getFont(com.itextpdf.text.FontFactory.HELVETICA_BOLD, 18, com.itextpdf.text.Font.BOLD)));
+        document.add(new Paragraph("Factura", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, Font.BOLD)));
         document.add(new Paragraph(" "));
 
         // Agregar datos del cliente
@@ -110,23 +118,31 @@ public class InvoiceWindow extends JFrame {
         document.add(new Paragraph(" "));
 
         // Agregar tabla de productos
-        PdfPTable table = new PdfPTable(3);
+        PdfPTable table = new PdfPTable(4);
         table.addCell("Producto");
-        table.addCell("Precio");
+        table.addCell("Precio Unitario");
         table.addCell("Cantidad");
+        table.addCell("Total");
 
         // Agregar filas de la tabla
         for (int i = 0; i < tableModel.getRowCount(); i++) {
             table.addCell((String) tableModel.getValueAt(i, 0)); // Producto
-            table.addCell((String) tableModel.getValueAt(i, 1)); // Precio
-            table.addCell((String) tableModel.getValueAt(i, 2)); // Cantidad
+            table.addCell(String.valueOf(tableModel.getValueAt(i, 1))); // Precio Unitario
+            table.addCell(String.valueOf(tableModel.getValueAt(i, 2))); // Cantidad
+            table.addCell(String.valueOf(tableModel.getValueAt(i, 3))); // Total
         }
 
         document.add(table);
         document.add(new Paragraph(" "));
         document.add(new Paragraph("Total: " + total));
-        document.add(new Paragraph("IVA: " + vat));
 
         document.close();
+    }
+
+    // Método para actualizar la tabla con los datos del carrito
+    private void populateTable(Object[][] cartData) {
+        for (Object[] row : cartData) {
+            tableModel.addRow(row);
+        }
     }
 }
