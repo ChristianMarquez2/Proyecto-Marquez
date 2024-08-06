@@ -104,7 +104,38 @@ public class UsuarioDAO {
             stmt.executeUpdate();
         }
     }
+    public String autenticarUsuarioYObtenerRol(String nombre, String contraseña) throws SQLException {
+        String query = "SELECT rol FROM usuarios WHERE nombre = ? AND contraseña = ?";
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, nombre);
+            stmt.setString(2, contraseña);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("rol");
+                }
+            }
+        }
+        return null; // Usuario o contraseña incorrectos
+    }
 
+    public Administrador obtenerAdministradorPorNombre(String nombre) throws SQLException {
+        String query = "SELECT * FROM usuarios WHERE nombre = ? AND rol = 'Administrador'";
+        try (Connection conn = BaseDeDatos.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, nombre);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Administrador(
+                            rs.getInt("id"),
+                            rs.getString("nombre"),
+                            rs.getString("contraseña")
+                    );
+                }
+            }
+        }
+        return null; // No se encontró el administrador
+    }
     // Método para eliminar un usuario
     public void eliminarUsuario(int id) throws SQLException {
         String query = "DELETE FROM usuarios WHERE id = ?";

@@ -1,5 +1,6 @@
 package com.tienda.GUI;
 
+import com.tienda.Clases.Administrador;
 import com.tienda.Clases.UsuarioDAO;
 import javax.swing.*;
 import java.awt.*;
@@ -69,10 +70,19 @@ public class LoginWindow extends JFrame {
             String password = new String(passwordField.getPassword());
 
             try {
-                // Validar credenciales
-                if (validarCredenciales(username, password)) {
-                    // Abrir la ventana principal y cerrar la ventana de login
-                    new MainMenuWindow(username).setVisible(true);
+                UsuarioDAO usuarioDAO = new UsuarioDAO();
+                String rol = usuarioDAO.autenticarUsuarioYObtenerRol(username, password);
+
+                if (rol != null) {
+                    if (rol.equals("Cajero")) {
+                        // Abrir la ventana principal para Cajero y cerrar la ventana de login
+                        new MainMenuWindow(username).setVisible(true);
+                    } else if (rol.equals("Administrador")) {
+                        // Obtener el objeto Administrador completo
+                        Administrador administrador = usuarioDAO.obtenerAdministradorPorNombre(username);
+                        // Abrir la ventana principal para Administrador y cerrar la ventana de login
+                        new AdminMenuWindow(administrador).setVisible(true);
+                    }
                     dispose();
                 } else {
                     // Mostrar mensaje de error
@@ -83,11 +93,6 @@ public class LoginWindow extends JFrame {
                 JOptionPane.showMessageDialog(LoginWindow.this, "Error al conectar con la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
-        }
-
-        private boolean validarCredenciales(String username, String password) throws SQLException {
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
-            return usuarioDAO.verificarCredenciales(username, password);
         }
     }
 

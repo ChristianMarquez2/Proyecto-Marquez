@@ -68,7 +68,7 @@ public class MainMenuWindow extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Asegúrate de pasar el objeto Administrador al constructor
-                    new AdminMenuWindow(admin).setVisible(true);
+                    //new AdminMenuWindow(admin).setVisible(true);
                 }
             });
             navigationPanel.add(adminButton);
