@@ -13,6 +13,7 @@ public class MainMenuWindow extends JFrame {
     private JButton cartButton;
     private JButton reportsButton;
     private JButton settingsButton;
+    private JButton adminButton; // Añadido
     private JButton logoutButton;
     private JTextPane infoTextPane;
     private JLabel logoLabel;
@@ -36,7 +37,7 @@ public class MainMenuWindow extends JFrame {
 
         // Panel de navegación
         navigationPanel = new JPanel();
-        navigationPanel.setLayout(new GridLayout(7, 1, 10, 10)); // 7 filas para incluir todos los botones
+        navigationPanel.setLayout(new GridLayout(8, 1, 10, 10)); // 8 filas para incluir todos los botones
 
         // Botón de Productos
         productButton = createNavigationButton("Productos", "path/to/product_icon.png"); // Ruta al icono
@@ -57,6 +58,22 @@ public class MainMenuWindow extends JFrame {
         // Botón de Configuración
         settingsButton = createNavigationButton("Configuración", "path/to/settings_icon.png");
         navigationPanel.add(settingsButton);
+
+        // Botón de Administración (solo visible para ADMINISTRADOR)
+        // Supongamos que tienes un objeto Administrador llamado admin
+        if ("Admin".equalsIgnoreCase(userRole)) {
+            adminButton = new JButton("Administración");
+            adminButton.setIcon(new ImageIcon("path/to/admin_icon.png")); // Ruta al icono de administración
+            adminButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Asegúrate de pasar el objeto Administrador al constructor
+                    new AdminMenuWindow(admin).setVisible(true);
+                }
+            });
+            navigationPanel.add(adminButton);
+        }
+
 
         // Botón de Salir
         logoutButton = new JButton("Salir");
@@ -92,7 +109,6 @@ public class MainMenuWindow extends JFrame {
                 // Aquí puedes agregar la lógica para cada botón
                 switch (text) {
                     case "Productos":
-                        // Pasa la instancia de CartWindow al constructor de ProductSelectionWindow
                         new ProductSelectionWindow(cartWindow).setVisible(true);
                         break;
                     case "Facturación":
