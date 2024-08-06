@@ -15,30 +15,51 @@ public class LoginWindow extends JFrame {
     public LoginWindow() {
         // Configuración del JFrame
         setTitle("Acceso al Sistema");
-        setSize(300, 200);
+        setSize(350, 250);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        // Crear el panel principal con GridLayout
-        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10)); // Añadido espaciado entre componentes
+        // Crear el panel para el logo
+        JPanel logoPanel = new JPanel();
+        JLabel logoLabel = new JLabel(new ImageIcon("imagenes/LogoCell.png")); // Ruta de la imagen
+        logoPanel.add(logoLabel);
+        add(logoPanel, BorderLayout.NORTH);
 
-        // Campo de usuario
-        panel.add(new JLabel("Usuario:"));
-        usernameField = new JTextField();
-        panel.add(usernameField);
+        // Crear el panel principal para los campos de texto y el botón
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre componentes
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(new JLabel("Usuario:"), gbc);
 
-        // Campo de contraseña
-        panel.add(new JLabel("Contraseña:"));
-        passwordField = new JPasswordField();
-        panel.add(passwordField);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        usernameField = new JTextField(15);
+        panel.add(usernameField, gbc);
 
-        // Botón de inicio de sesión
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        panel.add(new JLabel("Contraseña:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        passwordField = new JPasswordField(15);
+        panel.add(passwordField, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         iniciarSesionButton = new JButton("Iniciar sesión");
         iniciarSesionButton.addActionListener(new LoginActionListener());
-        panel.add(iniciarSesionButton);
+        panel.add(iniciarSesionButton, gbc);
 
-        // Añadir el panel al JFrame
-        add(panel);
+        add(panel, BorderLayout.CENTER);
     }
 
     private class LoginActionListener implements ActionListener {
