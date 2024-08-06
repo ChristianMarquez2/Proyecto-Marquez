@@ -1,4 +1,4 @@
-package com.tienda.GUI;
+package com.tienda.CajeroActions;
 
 import com.tienda.Clases.Producto;
 import com.tienda.Clases.ProductoDAO;

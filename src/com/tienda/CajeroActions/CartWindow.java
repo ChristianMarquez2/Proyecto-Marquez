@@ -1,8 +1,4 @@
-package com.tienda.GUI;
-
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+package com.tienda.CajeroActions;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -11,8 +7,6 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class CartWindow extends JFrame {
     private JTable cartTable;

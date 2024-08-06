@@ -10,7 +10,6 @@ public class ConfiguracionDAO {
     public ConfiguracionDAO(Connection connection) {
         this.connection = connection;
     }
-
     public boolean guardarConfiguracion(String username, String password) {
         String sql = "UPDATE configuracion SET username = ?, password = ? WHERE id = 1";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

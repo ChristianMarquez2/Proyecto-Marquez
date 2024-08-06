@@ -1,5 +1,9 @@
 package com.tienda.GUI;
 
+import com.tienda.CajeroActions.BillingWindow;
+import com.tienda.CajeroActions.CartWindow;
+import com.tienda.CajeroActions.ReportsWindow;
+import com.tienda.CajeroActions.SettingsWindow;
 import com.tienda.Clases.Administrador;
 import com.tienda.Clases.AdminReportsWindow;
 import com.tienda.Clases.Producto;
@@ -7,7 +11,6 @@ import com.tienda.Clases.Usuario;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AdminMenuWindow extends JFrame {

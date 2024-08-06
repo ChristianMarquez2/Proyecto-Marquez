@@ -1,4 +1,4 @@
-package com.tienda.GUI;
+package com.tienda.CajeroActions;
 
 import com.tienda.Clases.GeneradorPDF;
 import javax.swing.*;
@@ -6,7 +6,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 public class InvoiceWindow extends JFrame {
     private JTable invoiceTable;

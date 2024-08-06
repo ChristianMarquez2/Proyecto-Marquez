@@ -1,4 +1,4 @@
-package com.tienda.GUI;
+package com.tienda.CajeroActions;
 
 import com.itextpdf.text.DocumentException;
 import com.tienda.Clases.GeneradorPDF;
@@ -14,8 +14,10 @@ public class BillingWindow extends JFrame {
     private JTable productosTable;
     private DefaultTableModel productosTableModel;
     private JTextField nombreClienteField, direccionField, telefonoField, emailField, nitCiField;
+    private ReportsWindow reportsWindow; // Añadir referencia a ReportsWindow
 
-    public BillingWindow(Object[][] cartData, String total) {
+    public BillingWindow(Object[][] cartData, String total, ReportsWindow reportsWindow) {
+        this.reportsWindow = reportsWindow; // Guardar referencia a ReportsWindow
         setTitle("Facturación");
         setSize(600, 400);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -89,13 +91,29 @@ public class BillingWindow extends JFrame {
                             Double.parseDouble(total.replace("Total: $", "").replace(",", ".")),
                             rutaArchivo
                     );
+
                     JOptionPane.showMessageDialog(BillingWindow.this, "Factura generada exitosamente en " + rutaArchivo, "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Enviar datos de la factura a ReportsWindow
+                    if (reportsWindow != null) {
+                        reportsWindow.setDatosFactura(
+                                nombreClienteField.getText(),
+                                direccionField.getText(),
+                                telefonoField.getText(),
+                                emailField.getText(),
+                                nitCiField.getText(),
+                                getProductosAsString(cartData),
+                                Double.parseDouble(total.replace("Total: $", "").replace(",", ".")),
+                                "Usuario Actual" // Aquí deberías obtener el usuario actual del sistema
+                        );
+                    }
                 } catch (IOException | DocumentException | NumberFormatException ex) {
                     JOptionPane.showMessageDialog(BillingWindow.this, "Error al generar la factura", "Error", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             }
         });
+
 
         cancelarButton.addActionListener(new ActionListener() {
             @Override
@@ -105,7 +123,11 @@ public class BillingWindow extends JFrame {
         });
     }
 
-    public BillingWindow() {
-        // Constructor vacío para uso general si es necesario
+    private String getProductosAsString(Object[][] cartData) {
+        StringBuilder sb = new StringBuilder();
+        for (Object[] row : cartData) {
+            sb.append(row[0]).append(" - ").append(row[1]).append(" - Cantidad: ").append(row[2]).append("\n");
+        }
+        return sb.toString();
     }
 }

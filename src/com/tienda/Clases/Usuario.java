@@ -19,7 +19,7 @@ public class Usuario {
         this.id = id;
         this.nombre = nombre;
         this.rol = rol;
-        this.contraseña = ""; // Contraseña vacía o null
+        this.contraseña = "";
     }
 
     // Getters y Setters
