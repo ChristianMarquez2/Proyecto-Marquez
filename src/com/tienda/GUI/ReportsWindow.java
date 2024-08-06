@@ -1,9 +1,15 @@
 package com.tienda.GUI;
 
+import com.tienda.Clases.BaseDeDatos; // Asegúrate de que el nombre de la clase es correcto
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ReportsWindow extends JFrame {
     private JTextArea reportsArea;
@@ -14,10 +20,8 @@ public class ReportsWindow extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel para los reportes
         JPanel reportsPanel = new JPanel(new BorderLayout());
 
-        // Área de texto para mostrar reportes
         reportsArea = new JTextArea();
         reportsArea.setEditable(false);
         reportsArea.setLineWrap(true);
@@ -25,67 +29,65 @@ public class ReportsWindow extends JFrame {
         JScrollPane scrollPane = new JScrollPane(reportsArea);
         reportsPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Panel de botones
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        JButton generateReportButton = new JButton("Generar Reporte");
-        generateReportButton.addActionListener(new ActionListener() {
+        JButton loadReportsButton = new JButton("Cargar Reportes");
+        loadReportsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Acción para generar un reporte
-                generarReporte();
+                cargarReportes();
             }
         });
 
-        JButton exportButton = new JButton("Exportar Reporte");
-        exportButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Acción para exportar el reporte (puedes implementar la lógica aquí)
-                exportarReporte();
-            }
-        });
-
-        bottomPanel.add(generateReportButton);
-        bottomPanel.add(exportButton);
+        bottomPanel.add(loadReportsButton);
 
         reportsPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         add(reportsPanel);
     }
 
-    private void generarReporte() {
-        // Aquí deberías reemplazar estos datos simulados con datos reales obtenidos de tu base de datos
-        String reportTitle = "Reporte de Ventas y Productos";
-        String totalSales = "Ventas Totales: $5000";
-        String mostSoldProducts = "Productos Más Vendidos:\n" +
-                "1. Smartphone XYZ - 150 unidades\n" +
-                "2. Tablet ABC - 100 unidades";
-        String transactionSummary = "Cantidad de Transacciones: 75";
-
-        // Crear el contenido del reporte
-        String reportContent = String.join("\n\n",
-                reportTitle,
-                totalSales,
-                mostSoldProducts,
-                transactionSummary
-        );
-
-        // Establecer el contenido del reporte en el área de texto
-        reportsArea.setText(reportContent);
-
-        // Para mejorar el formato, puedes usar un StringBuilder para construir el contenido
+    private void cargarReportes() {
         StringBuilder sb = new StringBuilder();
-        sb.append(reportTitle).append("\n\n");
-        sb.append(totalSales).append("\n\n");
-        sb.append(mostSoldProducts).append("\n\n");
-        sb.append(transactionSummary);
+        Connection connection = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            connection = BaseDeDatos.getConnection();
+            String query = "SELECT * FROM facturas"; // Cambia esto si la tabla se llama `reportes`
+            stmt = connection.prepareStatement(query);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String nombreUsuario = rs.getString("usuario"); // Ajusta el nombre del campo si es necesario
+                String contenido = "Nombre del Cliente: " + rs.getString("nombre_cliente") + "\n" +
+                        "Dirección: " + rs.getString("direccion") + "\n" +
+                        "Teléfono: " + rs.getString("telefono") + "\n" +
+                        "Email: " + rs.getString("email") + "\n" +
+                        "NIT/CI: " + rs.getString("nit_ci") + "\n" +
+                        "Productos:\n" + rs.getString("productos") + "\n" +
+                        "Total: $" + rs.getDouble("total") + "\n" +
+                        "Fecha: " + rs.getTimestamp("fecha") + "\n";
+
+                sb.append("Fecha: ").append(rs.getTimestamp("fecha")).append("\n")
+                        .append("Usuario: ").append(nombreUsuario).append("\n")
+                        .append("Contenido:\n").append(contenido).append("\n\n");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar los reportes", "Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Cerrar recursos en el bloque finally
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
 
         reportsArea.setText(sb.toString());
-    }
-
-    private void exportarReporte() {
-        // Implementar la lógica para exportar el reporte, por ejemplo, a un archivo de texto o PDF
-        JOptionPane.showMessageDialog(this, "Reporte exportado exitosamente.", "Exportar Reporte", JOptionPane.INFORMATION_MESSAGE);
     }
 }

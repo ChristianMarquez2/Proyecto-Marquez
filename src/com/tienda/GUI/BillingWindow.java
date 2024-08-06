@@ -21,11 +21,9 @@ public class BillingWindow extends JFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel principal
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Panel de entrada de datos del cliente
-        JPanel clientePanel = new JPanel(new GridLayout(6, 2, 5, 5)); // Ajustado a 6 filas y 2 columnas
+        JPanel clientePanel = new JPanel(new GridLayout(6, 2, 5, 5));
         clientePanel.setBorder(BorderFactory.createTitledBorder("Datos del Cliente"));
 
         clientePanel.add(new JLabel("Nombre del Cliente:"));
@@ -50,7 +48,6 @@ public class BillingWindow extends JFrame {
 
         mainPanel.add(clientePanel, BorderLayout.NORTH);
 
-        // Panel de productos y precios
         JPanel productosPanel = new JPanel(new BorderLayout());
         productosPanel.setBorder(BorderFactory.createTitledBorder("Productos y Precios"));
 
@@ -59,14 +56,12 @@ public class BillingWindow extends JFrame {
         JScrollPane scrollPane = new JScrollPane(productosTable);
         productosPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // Agregar datos del carrito a la tabla de productos
         for (Object[] row : cartData) {
             productosTableModel.addRow(row);
         }
 
         mainPanel.add(productosPanel, BorderLayout.CENTER);
 
-        // Panel de botones
         JPanel botonesPanel = new JPanel(new FlowLayout());
 
         JButton generarFacturaButton = new JButton("Generar Factura");
@@ -79,21 +74,19 @@ public class BillingWindow extends JFrame {
 
         add(mainPanel);
 
-        // Acción del botón "Generar Factura"
         generarFacturaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Generar el PDF de la factura
-                    String rutaArchivo = "Factura.pdf"; // Puedes cambiar la ruta si es necesario
+                    String rutaArchivo = "Factura.pdf";
                     GeneradorPDF.generarFactura(
                             nombreClienteField.getText(),
                             direccionField.getText(),
                             telefonoField.getText(),
-                            emailField.getText(), // Agrega el email si es necesario
-                            nitCiField.getText(), // Agrega el NIT/CI si es necesario
+                            emailField.getText(),
+                            nitCiField.getText(),
                             cartData,
-                            Double.parseDouble(total.replace("Total: $", "").replace(",", ".")), // Reemplaza "," con "."
+                            Double.parseDouble(total.replace("Total: $", "").replace(",", ".")),
                             rutaArchivo
                     );
                     JOptionPane.showMessageDialog(BillingWindow.this, "Factura generada exitosamente en " + rutaArchivo, "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -104,16 +97,15 @@ public class BillingWindow extends JFrame {
             }
         });
 
-        // Acción del botón "Cancelar"
         cancelarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose(); // Cierra la ventana
+                dispose();
             }
         });
     }
 
     public BillingWindow() {
-
+        // Constructor vacío para uso general si es necesario
     }
 }
