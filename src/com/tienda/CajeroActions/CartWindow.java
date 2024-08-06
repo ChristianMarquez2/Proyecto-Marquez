@@ -14,38 +14,47 @@ public class CartWindow extends JFrame {
     private JLabel totalLabel;
 
     public CartWindow() {
-        setTitle("Carrito");
-        setSize(800, 600);
+        setTitle("Carrito de Compras");
+        setSize(900, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
         // Panel principal del carrito
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Panel para la tabla del carrito
         JPanel tablePanel = new JPanel(new BorderLayout());
+        tablePanel.setBorder(BorderFactory.createTitledBorder("Productos en el Carrito"));
+
         String[] columnNames = {"Producto", "Modelo", "Cantidad", "Precio", "Total", "Eliminar"};
         tableModel = new DefaultTableModel(columnNames, 0);
         cartTable = new JTable(tableModel);
+        cartTable.setRowHeight(30);
+        cartTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        cartTable.setSelectionBackground(new Color(204, 229, 255));
+
         JScrollPane scrollPane = new JScrollPane(cartTable);
         tablePanel.add(scrollPane, BorderLayout.CENTER);
 
         mainPanel.add(tablePanel, BorderLayout.CENTER);
 
         // Panel para el total y botón de pago
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
         totalLabel = new JLabel("Total: $0.00");
-        bottomPanel.add(totalLabel);
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        bottomPanel.add(totalLabel, BorderLayout.WEST);
 
         JButton checkoutButton = new JButton("Pagar");
-        checkoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Acción para proceder al pago
-                openInvoiceWindow();
-            }
-        });
-        bottomPanel.add(checkoutButton);
+        checkoutButton.setFont(new Font("Arial", Font.BOLD, 16));
+        checkoutButton.setBackground(new Color(0, 123, 255));
+        checkoutButton.setForeground(Color.WHITE);
+        checkoutButton.setFocusPainted(false);
+        checkoutButton.addActionListener(e -> openInvoiceWindow());
+        bottomPanel.add(checkoutButton, BorderLayout.EAST);
 
         mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -119,10 +128,14 @@ public class CartWindow extends JFrame {
         public ButtonRenderer() {
             setOpaque(true);
             setText("Eliminar");
+            setFont(new Font("Arial", Font.PLAIN, 14));
+            setBackground(new Color(255, 69, 58));
+            setForeground(Color.WHITE);
+            setFocusPainted(false);
             addActionListener(e -> {
                 // Obtener la fila que fue clickeada
-                int row = cartTable.rowAtPoint(SwingUtilities.convertPoint(ButtonRenderer.this,
-                        new Point(0, 0), cartTable));
+                Point point = SwingUtilities.convertPoint(ButtonRenderer.this, new Point(0, 0), cartTable);
+                int row = cartTable.rowAtPoint(point);
                 if (row >= 0) {
                     tableModel.removeRow(row);
                     updateTotal();

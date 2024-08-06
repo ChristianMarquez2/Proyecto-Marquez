@@ -1,4 +1,5 @@
 package com.tienda.Clases;
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
@@ -6,6 +7,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -14,8 +16,14 @@ import java.util.List;
 public class Administrador extends Usuario {
     private static final Logger logger = LoggerFactory.getLogger(Administrador.class);
 
+    // Constructor parametrizado
     public Administrador(int id, String nombre, String contraseña) {
         super(id, nombre, contraseña, "Administrador");
+    }
+
+    // Constructor sin argumentos (opcional)
+    public Administrador() {
+        super(0, "Default", "default_password", "Administrador");
     }
 
     // Método para agregar un nuevo producto

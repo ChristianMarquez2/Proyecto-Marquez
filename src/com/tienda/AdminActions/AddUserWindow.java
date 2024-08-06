@@ -1,6 +1,7 @@
 package com.tienda.AdminActions;
 
 import com.tienda.Clases.BaseDeDatos;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,30 +13,108 @@ import java.sql.SQLException;
 public class AddUserWindow extends JFrame {
 
     private JTextField usernameField, passwordField;
+    private JComboBox<String> roleComboBox;
+    private JButton saveButton;
+    private JButton cancelButton;
 
     public AddUserWindow() {
         setTitle("Agregar Usuario");
-        setSize(400, 200);
+        setSize(500, 300);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(3, 2, 5, 5));
+        setLayout(new BorderLayout());
 
-        // Campos de entrada
-        add(new JLabel("Nombre de Usuario:"));
-        usernameField = new JTextField();
-        add(usernameField);
+        // Panel principal
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        add(new JLabel("Contraseña:"));
-        passwordField = new JTextField();
-        add(passwordField);
+        // Título en la parte superior
+        JLabel titleLabel = new JLabel("Agregar Nuevo Usuario", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
 
-        JButton saveButton = new JButton("Guardar");
-        add(saveButton);
+        // Panel de formulario
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
 
+        // Etiqueta y campo de nombre de usuario
+        JLabel usernameLabel = new JLabel("Nombre de Usuario:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(usernameLabel, gbc);
+
+        usernameField = new JTextField(20);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        formPanel.add(usernameField, gbc);
+
+        // Etiqueta y campo de contraseña
+        JLabel passwordLabel = new JLabel("Contraseña:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(passwordLabel, gbc);
+
+        passwordField = new JPasswordField(20);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        formPanel.add(passwordField, gbc);
+
+        // Etiqueta y combo box para rol
+        JLabel roleLabel = new JLabel("Rol:");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        formPanel.add(roleLabel, gbc);
+
+        roleComboBox = new JComboBox<>(new String[]{"Administrador", "Cajero"});
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        formPanel.add(roleComboBox, gbc);
+
+        // Panel de botones
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+        saveButton = new JButton("Guardar");
+        saveButton.setFont(new Font("Arial", Font.BOLD, 14));
+        saveButton.setForeground(Color.WHITE);
+        saveButton.setBackground(new Color(0, 122, 255)); // Azul
+        saveButton.setOpaque(true);
+        saveButton.setBorderPainted(false);
+        saveButton.setFocusPainted(false);
+        buttonPanel.add(saveButton);
+
+        cancelButton = new JButton("Cancelar");
+        cancelButton.setFont(new Font("Arial", Font.BOLD, 14));
+        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setBackground(new Color(0, 122, 255)); // Azul
+        cancelButton.setOpaque(true);
+        cancelButton.setBorderPainted(false);
+        cancelButton.setFocusPainted(false);
+        buttonPanel.add(cancelButton);
+
+        // Agregar paneles al marco
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        add(mainPanel);
+
+        // Acción para guardar usuario
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 saveUser();
+            }
+        });
+
+        // Acción para cancelar
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Cerrar la ventana
             }
         });
     }
@@ -46,11 +125,12 @@ public class AddUserWindow extends JFrame {
 
         try {
             connection = BaseDeDatos.getConnection();
-            String query = "INSERT INTO usuarios (nombre, contraseña) VALUES (?, ?)";
+            String query = "INSERT INTO usuarios (nombre, rol, contraseña) VALUES (?, ?, ?)";
             stmt = connection.prepareStatement(query);
 
             stmt.setString(1, usernameField.getText());
-            stmt.setString(2, passwordField.getText());
+            stmt.setString(2, (String) roleComboBox.getSelectedItem());
+            stmt.setString(3, new String(((JPasswordField) passwordField).getPassword()));
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {

@@ -1,15 +1,15 @@
 package com.tienda.GUI;
 
 import com.tienda.CajeroActions.*;
-
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 public class MainMenuWindow extends JFrame {
     private String userRole;
     private JPanel navigationPanel;
     private JButton productButton;
-    private JButton billingButton;
+    private JButton settingsButton; // Nuevo botón de configuración
     private JButton cartButton;
     private JButton reportsButton;
     private JButton logoutButton;
@@ -20,99 +20,89 @@ public class MainMenuWindow extends JFrame {
     public MainMenuWindow(String userRole) {
         this.userRole = userRole;
         setTitle("Menú Principal - CellTechHub");
-        setSize(1000, 600); // Tamaño ajustado para una mejor visualización
+        setSize(1000, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         // Inicializa la ventana del carrito
-        cartWindow = new CartWindow(); // Crear una instancia de CartWindow
+        cartWindow = new CartWindow();
 
         // Panel principal
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(240, 240, 240));
 
         // Panel superior para el título y el logo
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(new Color(30, 144, 255)); // Azul oscuro
 
-
-        // Logo
-        ImageIcon logoIcon = new ImageIcon("C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\LogoCell.png"); // Ruta al archivo del logo
+        ImageIcon logoIcon = new ImageIcon("src/com/tienda/Imagenes/LogoCell.png"); // Ruta al archivo del logo
         logoLabel = new JLabel(logoIcon);
-        topPanel.add(logoLabel, BorderLayout.EAST);
+        topPanel.add(logoLabel, BorderLayout.WEST);
 
         // Texto de bienvenida
         infoTextPane = new JTextPane();
         infoTextPane.setText("Bienvenido al Menú Principal de CellTechHub.");
         infoTextPane.setEditable(false);
-        infoTextPane.setFont(new Font("Arial", Font.PLAIN, 18)); // Tamaño de fuente ajustado
-        infoTextPane.setBackground(getBackground());
+        infoTextPane.setFont(new Font("Arial", Font.BOLD, 20));
+        infoTextPane.setForeground(Color.WHITE);
+        infoTextPane.setBackground(new Color(30, 144, 255));
         infoTextPane.setMargin(new Insets(10, 10, 10, 10));
+        topPanel.add(infoTextPane, BorderLayout.CENTER);
 
         // Panel de navegación
-        navigationPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.BOTH; // Ajusta para llenar todo el espacio
+        navigationPanel = new JPanel();
+        navigationPanel.setLayout(new GridLayout(3, 2, 10, 10));
+        navigationPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        navigationPanel.setBackground(Color.WHITE);
 
-        // Botón de Productos
-        productButton = createNavigationButton("Productos", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        navigationPanel.add(productButton, gbc);
+        // Botones de navegación
+        productButton = createNavigationButton("Productos", "src/com/tienda/Imagenes/product_icon.png");
+        navigationPanel.add(productButton);
 
-        // Botón de Facturación
-        billingButton = createNavigationButton("Facturación", "path/to/billing_icon.png");
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        navigationPanel.add(billingButton, gbc);
+        settingsButton = createNavigationButton("Configuración", "src/com/tienda/Imagenes/settings_icon.png");
+        navigationPanel.add(settingsButton);
 
-        // Botón de Carrito
-        cartButton = createNavigationButton("Carrito", "path/to/cart_icon.png");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        navigationPanel.add(cartButton, gbc);
+        cartButton = createNavigationButton("Carrito", "src/com/tienda/Imagenes/cart_icon.png");
+        navigationPanel.add(cartButton);
 
-        // Botón de Reportes
-        reportsButton = createNavigationButton("Reportes", "path/to/reports_icon.png");
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        navigationPanel.add(reportsButton, gbc);
+        reportsButton = createNavigationButton("Reportes", "src/com/tienda/Imagenes/reports_icon.png");
+        navigationPanel.add(reportsButton);
 
         // Botón de Salir
         logoutButton = new JButton("Salir");
-        logoutButton.setIcon(new ImageIcon("path/to/logout_icon.png")); // Ruta al icono de salir
-        logoutButton.setPreferredSize(new Dimension(100, 50)); // Tamaño ajustado
-        logoutButton.addActionListener(e -> System.exit(0)); // Cierra la aplicación
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.weighty = 0; // No tomar todo el espacio vertical
-        navigationPanel.add(logoutButton, gbc);
+        logoutButton.setIcon(new ImageIcon("src/com/tienda/Imagenes/logout_icon.png")); // Ruta al icono de salir
+        logoutButton.setFont(new Font("Arial", Font.BOLD, 16));
+        logoutButton.setBackground(new Color(255, 69, 58));
+        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setFocusPainted(false);
+        logoutButton.setPreferredSize(new Dimension(120, 40));
+        logoutButton.addActionListener(e -> System.exit(0));
+        navigationPanel.add(logoutButton);
 
         // Agregar paneles al marco
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(infoTextPane, BorderLayout.CENTER);
-        mainPanel.add(navigationPanel, BorderLayout.SOUTH);
+        mainPanel.add(navigationPanel, BorderLayout.CENTER);
 
-        add(mainPanel, BorderLayout.CENTER);
+        add(mainPanel);
     }
 
-    // Método auxiliar para crear botones de navegación con iconos
     private JButton createNavigationButton(String text, String iconPath) {
         JButton button = new JButton(text);
-        button.setIcon(new ImageIcon(iconPath)); // Ruta al icono
+        button.setIcon(new ImageIcon(iconPath));
         button.setHorizontalAlignment(SwingConstants.LEFT);
-        button.setPreferredSize(new Dimension(50, 50)); // Tamaño ajustado
+        button.setPreferredSize(new Dimension(180, 40)); // Tamaño ajustado
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setBackground(new Color(240, 240, 240));
+        button.setBorder(createRoundedBorder(15)); // Bordes redondeados
+        button.setFocusPainted(false);
         button.addActionListener(e -> {
-            // Aquí puedes agregar la lógica para cada botón
             switch (text) {
                 case "Productos":
                     new ProductSelectionWindow(cartWindow).setVisible(true);
                     break;
-                case "Facturación":
-                    new BillingWindow().setVisible(true);
+                case "Configuración":
+                    new SettingsWindow().setVisible(true); // Cambiado para abrir SettingsWindow
                     break;
                 case "Carrito":
                     cartWindow.setVisible(true);
@@ -125,7 +115,35 @@ public class MainMenuWindow extends JFrame {
         return button;
     }
 
+    private Border createRoundedBorder(int radius) {
+        return new RoundedBorder(radius);
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new MainMenuWindow("Admin").setVisible(true));
+    }
+
+    // Clase interna para bordes redondeados
+    private static class RoundedBorder implements Border {
+        private int radius;
+
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(this.radius + 2, this.radius + 2, this.radius + 2, this.radius + 2);
+        }
+
+        @Override
+        public boolean isBorderOpaque() {
+            return true;
+        }
+
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
     }
 }

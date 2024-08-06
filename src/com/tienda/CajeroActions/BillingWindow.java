@@ -14,17 +14,19 @@ public class BillingWindow extends JFrame {
     private JTable productosTable;
     private DefaultTableModel productosTableModel;
     private JTextField nombreClienteField, direccionField, telefonoField, emailField, nitCiField;
-    private ReportsWindow reportsWindow; // Añadir referencia a ReportsWindow
+    private ReportsWindow reportsWindow;
 
     public BillingWindow(Object[][] cartData, String total, ReportsWindow reportsWindow) {
-        this.reportsWindow = reportsWindow; // Guardar referencia a ReportsWindow
+        this.reportsWindow = reportsWindow;
+
         setTitle("Facturación");
-        setSize(600, 400);
+        setSize(800, 600); // Aumentado para mayor espacio
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
 
+        // Panel de datos del cliente
         JPanel clientePanel = new JPanel(new GridLayout(6, 2, 5, 5));
         clientePanel.setBorder(BorderFactory.createTitledBorder("Datos del Cliente"));
 
@@ -50,6 +52,7 @@ public class BillingWindow extends JFrame {
 
         mainPanel.add(clientePanel, BorderLayout.NORTH);
 
+        // Panel de productos y precios
         JPanel productosPanel = new JPanel(new BorderLayout());
         productosPanel.setBorder(BorderFactory.createTitledBorder("Productos y Precios"));
 
@@ -64,7 +67,8 @@ public class BillingWindow extends JFrame {
 
         mainPanel.add(productosPanel, BorderLayout.CENTER);
 
-        JPanel botonesPanel = new JPanel(new FlowLayout());
+        // Panel de botones
+        JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         JButton generarFacturaButton = new JButton("Generar Factura");
         botonesPanel.add(generarFacturaButton);
@@ -76,6 +80,7 @@ public class BillingWindow extends JFrame {
 
         add(mainPanel);
 
+        // Acciones de los botones
         generarFacturaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,12 +119,19 @@ public class BillingWindow extends JFrame {
             }
         });
 
+        cancelarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Cierra la ventana de facturación
+            }
+        });
     }
 
+    // Constructor vacío necesario para algunos usos
     public BillingWindow() {
-
     }
 
+    // Convierte los datos del carrito a una cadena legible
     private String getProductosAsString(Object[][] cartData) {
         StringBuilder sb = new StringBuilder();
         for (Object[] row : cartData) {

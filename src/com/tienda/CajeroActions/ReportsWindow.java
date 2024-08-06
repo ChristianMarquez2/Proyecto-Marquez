@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
 public class ReportsWindow extends JFrame {
     private JTextArea reportsArea;
@@ -25,22 +24,38 @@ public class ReportsWindow extends JFrame {
 
     public ReportsWindow() {
         setTitle("Reportes");
-        setSize(600, 400);
+        setSize(800, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel reportsPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadido margen
+
+        // Panel para el área de texto
+        JPanel textPanel = new JPanel(new BorderLayout());
+        textPanel.setBorder(BorderFactory.createTitledBorder("Contenido de Reportes")); // Añadido título
 
         reportsArea = new JTextArea();
         reportsArea.setEditable(false);
         reportsArea.setLineWrap(true);
         reportsArea.setWrapStyleWord(true);
+        reportsArea.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // Añadido borde
+        reportsArea.setBackground(new Color(250, 250, 250)); // Añadido color de fondo
         JScrollPane scrollPane = new JScrollPane(reportsArea);
-        reportsPanel.add(scrollPane, BorderLayout.CENTER);
+        textPanel.add(scrollPane, BorderLayout.CENTER);
 
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        mainPanel.add(textPanel, BorderLayout.CENTER);
+
+        // Panel para los botones
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre botones
 
         JButton loadReportsButton = new JButton("Cargar Reportes");
+        loadReportsButton.setBackground(new Color(0, 123, 255)); // Color de fondo
+        loadReportsButton.setForeground(Color.WHITE); // Color de texto
+        loadReportsButton.setFocusPainted(false);
+        loadReportsButton.setPreferredSize(new Dimension(150, 40)); // Tamaño preferido
         loadReportsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -49,6 +64,10 @@ public class ReportsWindow extends JFrame {
         });
 
         JButton saveReportsButton = new JButton("Guardar Reportes");
+        saveReportsButton.setBackground(new Color(0, 123, 255)); // Color de fondo
+        saveReportsButton.setForeground(Color.WHITE); // Color de texto
+        saveReportsButton.setFocusPainted(false);
+        saveReportsButton.setPreferredSize(new Dimension(150, 40)); // Tamaño preferido
         saveReportsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,12 +75,17 @@ public class ReportsWindow extends JFrame {
             }
         });
 
-        bottomPanel.add(loadReportsButton);
-        bottomPanel.add(saveReportsButton);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        buttonPanel.add(loadReportsButton, gbc);
 
-        reportsPanel.add(bottomPanel, BorderLayout.SOUTH);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        buttonPanel.add(saveReportsButton, gbc);
 
-        add(reportsPanel);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
     }
 
     public void setDatosFactura(String nombreCliente, String direccion, String telefono, String email, String nitCi, String productos, double total, String usuario) {

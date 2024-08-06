@@ -153,7 +153,7 @@ public class ProductPanel extends JPanel {
             case "Huawei":
                 return 5;
             default:
-                return -1;
+                return -1; // Manejo por defecto para marcas no encontradas
         }
     }
 }

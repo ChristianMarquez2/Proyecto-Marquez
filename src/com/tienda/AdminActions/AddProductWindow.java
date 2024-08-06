@@ -1,11 +1,13 @@
 package com.tienda.AdminActions;
 
 import com.tienda.Clases.BaseDeDatos;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,46 +15,89 @@ import java.sql.SQLException;
 public class AddProductWindow extends JFrame {
 
     private JTextField nameField, priceField, stockField, brandField, modelField, imageField;
+    private JButton saveButton, cancelButton;
 
     public AddProductWindow() {
         setTitle("Agregar Producto");
-        setSize(400, 350);  // Ajustado el tamaño para acomodar el nuevo campo
+        setSize(500, 400);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(7, 2, 5, 5));  // Ajustado el diseño para el nuevo campo
+        setLayout(new BorderLayout());
 
-        // Campos de entrada
-        add(new JLabel("Nombre:"));
-        nameField = new JTextField();
-        add(nameField);
+        // Panel principal
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        add(new JLabel("Precio:"));
-        priceField = new JTextField();
-        add(priceField);
+        // Título en la parte superior
+        JLabel titleLabel = new JLabel("Agregar Nuevo Producto", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
 
-        add(new JLabel("Stock:"));
-        stockField = new JTextField();
-        add(stockField);
+        // Panel de formulario
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
 
-        add(new JLabel("Marca:"));
-        brandField = new JTextField();
-        add(brandField);
+        // Etiquetas y campos
+        String[] labels = {"Nombre:", "Precio:", "Stock:", "Marca:", "Modelo:", "Imagen:"};
+        JTextField[] fields = {nameField, priceField, stockField, brandField, modelField, imageField};
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.NONE;
 
-        add(new JLabel("Modelo:"));
-        modelField = new JTextField();
-        add(modelField);
+        for (int i = 0; i < labels.length; i++) {
+            JLabel label = new JLabel(labels[i]);
+            formPanel.add(label, gbc);
+            gbc.gridx = 1;
+            fields[i] = new JTextField(20);
+            formPanel.add(fields[i], gbc);
+            gbc.gridx = 0;
+            gbc.gridy++;
+        }
 
-        add(new JLabel("Imagen:"));
-        imageField = new JTextField();  // Nuevo campo para la imagen
-        add(imageField);
+        mainPanel.add(formPanel, BorderLayout.CENTER);
 
-        JButton saveButton = new JButton("Guardar");
-        add(saveButton);
+        // Panel de botones
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
+        saveButton = new JButton("Guardar");
+        saveButton.setFont(new Font("Arial", Font.BOLD, 14));
+        saveButton.setForeground(Color.WHITE);
+        saveButton.setBackground(new Color(0, 122, 255)); // Azul
+        saveButton.setOpaque(true);
+        saveButton.setBorderPainted(false);
+        saveButton.setFocusPainted(false);
+        buttonPanel.add(saveButton);
+
+        cancelButton = new JButton("Cancelar");
+        cancelButton.setFont(new Font("Arial", Font.BOLD, 14));
+        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setBackground(new Color(0, 122, 255)); // Azul
+        cancelButton.setOpaque(true);
+        cancelButton.setBorderPainted(false);
+        cancelButton.setFocusPainted(false);
+        buttonPanel.add(cancelButton);
+
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        add(mainPanel);
+
+        // Acción para guardar producto
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 saveProduct();
+            }
+        });
+
+        // Acción para cancelar
+        cancelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Cerrar la ventana
             }
         });
     }
@@ -88,7 +133,7 @@ public class AddProductWindow extends JFrame {
             stmt.setInt(3, Integer.parseInt(stockField.getText()));
             stmt.setInt(4, brandId);
             stmt.setString(5, modelField.getText());
-            stmt.setString(6, imageField.getText());  // Establecer el valor de la imagen
+            stmt.setString(6, imageField.getText());
 
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
