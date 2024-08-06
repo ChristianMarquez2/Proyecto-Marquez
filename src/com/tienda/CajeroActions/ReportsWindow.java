@@ -88,6 +88,7 @@ public class ReportsWindow extends JFrame {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
+                String nombreUsuario = rs.getString("usuario");
                 String contenido = "Nombre del Cliente: " + rs.getString("nombre_cliente") + "\n" +
                         "Dirección: " + rs.getString("direccion") + "\n" +
                         "Teléfono: " + rs.getString("telefono") + "\n" +
@@ -98,7 +99,7 @@ public class ReportsWindow extends JFrame {
                         "Fecha: " + rs.getTimestamp("fecha") + "\n";
 
                 sb.append("Fecha: ").append(rs.getTimestamp("fecha")).append("\n")
-                        .append("Usuario: ").append(rs.getString("usuario")).append("\n")
+                        .append("Usuario: ").append(nombreUsuario).append("\n")
                         .append("Contenido:\n").append(contenido).append("\n\n");
             }
 
@@ -134,7 +135,7 @@ public class ReportsWindow extends JFrame {
             stmt.setString(5, nitCi);
             stmt.setString(6, productos);
             stmt.setDouble(7, total);
-            stmt.setTimestamp(8, new java.sql.Timestamp(new Date().getTime()));
+            stmt.setTimestamp(8, new java.sql.Timestamp(new java.util.Date().getTime()));
             stmt.setString(9, usuario);
 
             int rowsInserted = stmt.executeUpdate();

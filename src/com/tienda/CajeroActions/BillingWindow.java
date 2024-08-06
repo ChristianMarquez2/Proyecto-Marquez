@@ -114,13 +114,10 @@ public class BillingWindow extends JFrame {
             }
         });
 
+    }
 
-        cancelarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+    public BillingWindow() {
+
     }
 
     private String getProductosAsString(Object[][] cartData) {

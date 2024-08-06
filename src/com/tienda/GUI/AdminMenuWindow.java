@@ -1,13 +1,14 @@
 package com.tienda.GUI;
 
-import com.tienda.CajeroActions.BillingWindow;
+import com.tienda.AdminActions.AddProductWindow;
+import com.tienda.AdminActions.AddUserWindow;
+import com.tienda.AdminActions.ViewProductsWindow;
+import com.tienda.AdminActions.ViewSalesWindow;
 import com.tienda.CajeroActions.CartWindow;
 import com.tienda.CajeroActions.ReportsWindow;
 import com.tienda.CajeroActions.SettingsWindow;
 import com.tienda.Clases.Administrador;
 import com.tienda.Clases.AdminReportsWindow;
-import com.tienda.Clases.Producto;
-import com.tienda.Clases.Usuario;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +21,6 @@ public class AdminMenuWindow extends JFrame {
     private JButton addProductButton;
     private JButton viewSalesButton;
     private JButton addUserButton;
-    private JButton billingButton;
     private JButton cartButton;
     private JButton reportsButton;
     private JButton settingsButton;
@@ -48,27 +48,23 @@ public class AdminMenuWindow extends JFrame {
 
         // Panel de navegación
         navigationPanel = new JPanel();
-        navigationPanel.setLayout(new GridLayout(10, 1, 10, 10));
+        navigationPanel.setLayout(new GridLayout(9, 1, 10, 10)); // Ajuste el número de filas a 9
 
-        // Botón de productos
-        productButton = createNavigationButton("Ver Productos", "path/to/product_icon.png", e -> administrador.verProductos());
+        // Botón para ver productos
+        productButton = createNavigationButton("Ver Productos", "path/to/product_icon.png", e -> new ViewProductsWindow().setVisible(true));
         navigationPanel.add(productButton);
 
         // Botón para agregar productos
-        addProductButton = createNavigationButton("Agregar Producto", "path/to/add_product_icon.png", e -> agregarProducto());
+        addProductButton = createNavigationButton("Agregar Producto", "path/to/add_product_icon.png", e -> new AddProductWindow().setVisible(true));
         navigationPanel.add(addProductButton);
 
         // Botón para ver ventas
-        viewSalesButton = createNavigationButton("Ver Ventas", "path/to/view_sales_icon.png", e -> administrador.generarInformeVentas());
+        viewSalesButton = createNavigationButton("Ver Ventas", "path/to/view_sales_icon.png", e -> new ViewSalesWindow().setVisible(true));
         navigationPanel.add(viewSalesButton);
 
         // Botón para agregar usuarios
-        addUserButton = createNavigationButton("Agregar Usuario", "path/to/add_user_icon.png", e -> agregarUsuario());
+        addUserButton = createNavigationButton("Agregar Usuario", "path/to/add_user_icon.png", e -> new AddUserWindow().setVisible(true));
         navigationPanel.add(addUserButton);
-
-        // Botón de facturación
-        billingButton = createNavigationButton("Facturación", "path/to/billing_icon.png", e -> new BillingWindow().setVisible(true));
-        navigationPanel.add(billingButton);
 
         // Botón de carrito
         cartButton = createNavigationButton("Carrito", "path/to/cart_icon.png", e -> cartWindow.setVisible(true));
@@ -109,19 +105,5 @@ public class AdminMenuWindow extends JFrame {
         button.setHorizontalAlignment(SwingConstants.LEFT);
         button.addActionListener(actionListener);
         return button;
-    }
-
-    // Método para agregar un producto (abrir una ventana o mostrar un diálogo)
-    private void agregarProducto() {
-        Producto nuevoProducto = new Producto(0, "Nuevo Producto", 100.0, 50, "path/to/image.jpg", 1, "Modelo X");
-        administrador.agregarProducto(nuevoProducto);
-        JOptionPane.showMessageDialog(this, "Producto agregado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    // Método para agregar un usuario (abrir una ventana o mostrar un diálogo)
-    private void agregarUsuario() {
-        Usuario nuevoUsuario = new Usuario(0, "Nuevo Usuario", "contraseña"); // Ejemplo de usuario
-        administrador.agregarUsuario(nuevoUsuario);
-        JOptionPane.showMessageDialog(this, "Usuario agregado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }
 }
