@@ -123,13 +123,11 @@ Bases de Datos:
 
 
 
-Link del Video: 
+Link del Video: https://youtu.be/2t7_iyleOkw 
 
 
 
-
-
-
+JAVADOC:  https://epnecuador-my.sharepoint.com/:f:/g/personal/christian_marquez_epn_edu_ec/EtpO9x1xAVZAu9qETR5sjAgBMT0xRxZXmGKHpfgaLffpSA?e=8cN8bG
 
 
 
