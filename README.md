@@ -123,7 +123,7 @@ Bases de Datos:
 
 
 
-Link del Video: 
+Link del Video: https://youtu.be/2t7_iyleOkw 
 
 
 
