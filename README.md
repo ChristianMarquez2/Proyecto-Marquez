@@ -104,6 +104,19 @@ Aqui se cargan todos los reportes creados, de todos los usuarios, indica la ID, 
 
 ![image](https://github.com/user-attachments/assets/f5a3c1a8-1cf9-4dee-b694-2c434075b62c)
 
+Bases de Datos:
+
+![image](https://github.com/user-attachments/assets/4aa07362-566f-4dca-920c-2fa037e01746)
+![image](https://github.com/user-attachments/assets/7424bedb-4edf-4b97-8f76-ab983b5a5294)
+![image](https://github.com/user-attachments/assets/636b78f2-babb-41b7-bfda-2fd752988c86)
+![image](https://github.com/user-attachments/assets/73bca882-aa2e-489d-8eaf-7d91f9fd53ff)
+![image](https://github.com/user-attachments/assets/f7db252e-ed1d-407c-b79c-4b07810a5c5b)
+![image](https://github.com/user-attachments/assets/107b1472-d370-44ce-a7d5-3e52cd709ef0)
+![image](https://github.com/user-attachments/assets/bd6375d7-b627-497f-bb0d-18c68f3c816e)
+
+
+
+
 Link del Video: 
 
 
