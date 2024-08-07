@@ -48,6 +48,45 @@ Este es un apartado incompleto. Que deberia implementar funcionalidades a futuro
 Cierra la aplicación por completo
 
 MENÚ CAJERO
+Este menú posee menos cantidad de botones, ya que es lo justo para el cajero
+1.-Productos
+Aqui apareceran todos los productos cargados de la base de datos. Tiene dos menús desplegables, el menú de marca y de Modelo
+![image](https://github.com/user-attachments/assets/df8ede70-cd98-448f-ad96-8d1e27978b1c)
+El menú de modelo cambia según el menú de marca
+![image](https://github.com/user-attachments/assets/92c333a7-b27a-4066-9743-181885102cb3)
+![image](https://github.com/user-attachments/assets/e6931098-934f-4418-b00c-bc83932d014a)
+
+En este Apartado cargan los productos mostrando: Nombre, Modelo, Precio, Stock y tiene un botón que permite añadir al carrito
+Si no se selecciona ningun producto saldrá un aviso de que se debe seleccionar un producto
+![image](https://github.com/user-attachments/assets/97cf3317-fcbd-4a92-a446-323283badfa3)
+
+2.-CARRITO
+Aqui se muestran los productos del carrito
+Muestra: Producto, Modelo, Cantidad, Precio, Total a pagar, y eliminar el producto
+Además en la parte inferior muestra el total a pagar y un boton para PAGAR
+![image](https://github.com/user-attachments/assets/d9cc7aaf-c03e-4444-b52f-f1d40ee4dfe7)
+
+Al dar clic en PAGAR se abre otro apartado para generar la factura, aqui es necesario llenar los campos: Nombre del cliente, Dirección, Teléfono, Email, ci.
+Apareceran los detalles de la factura que incluyen: Producto, precio y cantidad
+Además tiene el boton de Generar Factura y Cancelar
+![image](https://github.com/user-attachments/assets/da917398-ef6e-48d8-9a30-be8ddab4e5e9)
+
+Al pulsar en generar Factura se abrirá un menú que nos permitirá seleccionar en donde deseamos guardar la factura, automaticamente se le asigna un nombre y un numero a la factura
+![image](https://github.com/user-attachments/assets/8cb69774-6d40-4274-9695-11e31537f444)
+![image](https://github.com/user-attachments/assets/01d88998-5689-410b-ade1-90477fd57614)
+Y así queda el comprobante de venta
+![image](https://github.com/user-attachments/assets/77ae18ca-117e-4acc-912e-79faaf212c7e)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
