@@ -16,28 +16,28 @@ public class ProductSelectionWindow extends JFrame {
     private DefaultTableModel tableModel;
     private JLabel imageLabel;
     private ProductoDAO productoDAO;
-    private CartWindow cartWindow; // Añadido
+    private CartWindow cartWindow;
 
-    public ProductSelectionWindow(CartWindow cartWindow) { // Modificado
+    public ProductSelectionWindow(CartWindow cartWindow) {
         setTitle("Selección de Productos");
         setSize(800, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        this.cartWindow = cartWindow; // Inicializa la instancia de CartWindow
+        this.cartWindow = cartWindow;
 
         productoDAO = new ProductoDAO();
 
         // Panel principal
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadido margen
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Panel de selección
         JPanel seleccionPanel = new JPanel();
         seleccionPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5); // Añadido espaciado entre componentes
+        gbc.insets = new Insets(5, 5, 5, 5);
 
         // ComboBox de marcas
         gbc.gridx = 0;
@@ -78,10 +78,10 @@ public class ProductSelectionWindow extends JFrame {
 
         // Botón de añadir al carrito
         JButton addToCartButton = new JButton("Añadir al Carrito");
-        addToCartButton.setBackground(new Color(0, 123, 255)); // Color de fondo
-        addToCartButton.setForeground(Color.WHITE); // Color de texto
+        addToCartButton.setBackground(new Color(0, 123, 255));
+        addToCartButton.setForeground(Color.WHITE);
         addToCartButton.setFocusPainted(false);
-        addToCartButton.setPreferredSize(new Dimension(200, 40)); // Tamaño preferido
+        addToCartButton.setPreferredSize(new Dimension(200, 40));
         addToCartButton.addActionListener(e -> addProductToCart());
         mainPanel.add(addToCartButton, BorderLayout.SOUTH);
 
@@ -104,6 +104,8 @@ public class ProductSelectionWindow extends JFrame {
             if (modeloComboBox.getItemCount() == 0) {
                 modeloComboBox.addItem("No hay modelos disponibles");
             }
+            // Mostrar todos los productos si no hay modelo seleccionado
+            mostrarProductos();
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al obtener modelos.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -115,9 +117,15 @@ public class ProductSelectionWindow extends JFrame {
         tableModel.setRowCount(0); // Limpiar la tabla
         imageLabel.setIcon(null); // Limpiar la imagen
 
-        // Mostrar productos según el modelo seleccionado
         try {
-            List<Producto> productos = productoDAO.obtenerProductosPorModelo(modeloSeleccionado);
+            List<Producto> productos;
+            if (modeloSeleccionado != null && !modeloSeleccionado.equals("No hay modelos disponibles")) {
+                productos = productoDAO.obtenerProductosPorModelo(modeloSeleccionado);
+            } else {
+                // Mostrar todos los productos si el modelo seleccionado es "No hay modelos disponibles" o null
+                productos = productoDAO.obtenerProductosPorMarca(obtenerMarcaId((String) marcaComboBox.getSelectedItem()));
+            }
+
             if (productos.isEmpty()) {
                 tableModel.addRow(new Object[]{"No hay productos disponibles", "", "", ""});
             } else {
@@ -128,8 +136,7 @@ public class ProductSelectionWindow extends JFrame {
                             "$" + producto.getPrecio(),
                             producto.getStock()
                     });
-                    // Cargar imagen del producto (puedes añadir el campo de imagen en la clase Producto si es necesario)
-                    // Si tienes una ruta de imagen, puedes cargarla aquí
+                    // Cargar imagen del producto (si tienes una ruta a la imagen)
                     // ImageIcon productImage = new ImageIcon("ruta/a/imagen.png");
                     // imageLabel.setIcon(productImage);
                 }

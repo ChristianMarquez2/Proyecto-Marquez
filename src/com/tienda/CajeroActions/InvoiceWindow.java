@@ -1,17 +1,21 @@
 package com.tienda.CajeroActions;
 
 import com.tienda.Clases.GeneradorPDF;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class InvoiceWindow extends JFrame {
     private JTable invoiceTable;
     private DefaultTableModel tableModel;
     private JTextField txtCustomerName, txtAddress, txtPhone, txtEmail, txtNitCi;
     private JLabel totalLabel;
+    private AtomicInteger serieNumber;
 
     public InvoiceWindow(Object[][] cartData, String total) {
         setTitle("Generar Factura");
@@ -19,6 +23,9 @@ public class InvoiceWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
+
+        // Inicializar número de serie
+        serieNumber = new AtomicInteger(loadSerieNumber());
 
         // Panel de datos del cliente
         JPanel customerPanel = new JPanel(new GridLayout(6, 2, 10, 10));
@@ -111,9 +118,17 @@ public class InvoiceWindow extends JFrame {
                     String totalText = totalLabel.getText();
                     double total = Double.parseDouble(totalText.replace("Total: $", "").replace(",", ".").trim());
 
+                    // Generar número de serie
+                    int serie = serieNumber.getAndIncrement();
+                    saveSerieNumber(serieNumber.get());
+
+                    // Nombre del archivo PDF
+                    String nombreArchivo = String.format("%s No %04d Comprobante", nombreCliente, serie);
+
                     // Ruta del archivo PDF
                     JFileChooser fileChooser = new JFileChooser();
                     fileChooser.setDialogTitle("Guardar Factura");
+                    fileChooser.setSelectedFile(new File(nombreArchivo + ".pdf"));
                     int userSelection = fileChooser.showSaveDialog(InvoiceWindow.this);
                     if (userSelection != JFileChooser.APPROVE_OPTION) {
                         return; // Usuario canceló el diálogo
@@ -153,5 +168,21 @@ public class InvoiceWindow extends JFrame {
             }
         }
         return data;
+    }
+
+    private int loadSerieNumber() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("serie.txt"))) {
+            return Integer.parseInt(reader.readLine());
+        } catch (IOException | NumberFormatException e) {
+            return 1; // Valor por defecto si no se puede leer el archivo
+        }
+    }
+
+    private void saveSerieNumber(int number) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("serie.txt"))) {
+            writer.write(String.valueOf(number));
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar el número de serie.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
