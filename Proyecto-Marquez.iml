@@ -11,5 +11,6 @@
     <orderEntry type="library" name="jbcrypt-0.4" level="project" />
     <orderEntry type="library" name="itextpdf-5.5.13.4" level="project" />
     <orderEntry type="library" name="slf4j-api-2.1.0-alpha1" level="project" />
+    <orderEntry type="library" name="slf4j-api-1.7.32" level="project" />
   </component>
 </module>
