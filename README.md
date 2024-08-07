@@ -95,11 +95,13 @@ Y así queda el comprobante de venta
 
 3.- Configuracion
 Este es un apartado incompleto. Que deberia implementar funcionalidades a futuro, como poner un mnodo oscuro, , cambiar el tema, activar notificaciones.
+
 ![image](https://github.com/user-attachments/assets/4027013f-b5c9-4cef-9518-3fc8be283309)
 
 4.- REPORTES
 
 Aqui se cargan todos los reportes creados, de todos los usuarios, indica la ID, el nombre, dirección, telefono, email, ci, producto, total, fecha y usuario que realizo el reporte. Además tiene un boton para cargar los reportes y un boton para guardar los reportes
+
 ![image](https://github.com/user-attachments/assets/f5a3c1a8-1cf9-4dee-b694-2c434075b62c)
 
 Link del Video: 
