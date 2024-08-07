@@ -51,7 +51,7 @@ public class ViewSalesWindow extends JFrame {
         buttonPanel.add(refreshButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Cargar datos de ventas
+        // Cargar datos de ventas al iniciar la ventana
         loadSales();
 
         // Acción para actualizar datos
