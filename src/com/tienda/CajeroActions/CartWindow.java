@@ -103,6 +103,7 @@ public class CartWindow extends JFrame {
     // Método para configurar el botón de eliminar
     private void setupDeleteButton() {
         cartTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
+        cartTable.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox()));
     }
 
     // Método para abrir la ventana de facturación
@@ -132,15 +133,6 @@ public class CartWindow extends JFrame {
             setBackground(new Color(255, 69, 58));
             setForeground(Color.WHITE);
             setFocusPainted(false);
-            addActionListener(e -> {
-                // Obtener la fila que fue clickeada
-                Point point = SwingUtilities.convertPoint(ButtonRenderer.this, new Point(0, 0), cartTable);
-                int row = cartTable.rowAtPoint(point);
-                if (row >= 0) {
-                    tableModel.removeRow(row);
-                    updateTotal();
-                }
-            });
         }
 
         @Override
@@ -150,10 +142,64 @@ public class CartWindow extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            CartWindow cartWindow = new CartWindow();
-            cartWindow.setVisible(true);
-        });
+    // Clase para el editor del botón de eliminar
+    private class ButtonEditor extends DefaultCellEditor {
+        private JButton button;
+        private String label;
+        private boolean isPushed;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.setFont(new Font("Arial", Font.PLAIN, 14));
+            button.setBackground(new Color(255, 69, 58));
+            button.setForeground(Color.WHITE);
+            button.setFocusPainted(false);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            if (isSelected) {
+                button.setBackground(table.getSelectionBackground());
+            } else {
+                button.setBackground(table.getSelectionForeground());
+            }
+            label = (value == null) ? "Eliminar" : value.toString();
+            button.setText(label);
+            isPushed = true;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed) {
+                int row = cartTable.convertRowIndexToModel(cartTable.getEditingRow());
+                if (row >= 0 && row < tableModel.getRowCount()) {
+                    tableModel.removeRow(row);
+                    updateTotal();
+                }
+            }
+            isPushed = false;
+            return label;
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+
+        @Override
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
+        }
     }
+
+
 }

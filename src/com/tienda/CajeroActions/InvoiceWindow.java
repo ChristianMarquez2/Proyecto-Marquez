@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.sql.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InvoiceWindow extends JFrame {
@@ -138,6 +139,10 @@ public class InvoiceWindow extends JFrame {
                     // Generar el PDF de la factura
                     GeneradorPDF.generarFactura(nombreCliente, direccion, telefono, email, nitCi, getCartData(), total, rutaArchivo);
                     JOptionPane.showMessageDialog(InvoiceWindow.this, "Factura generada exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Guardar los datos de la factura en la base de datos y actualizar stock
+                    guardarFacturaEnBaseDeDatos(nombreCliente, direccion, telefono, email, nitCi, getCartData(), total);
+
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(InvoiceWindow.this, "Formato del total incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
@@ -185,4 +190,62 @@ public class InvoiceWindow extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al guardar el número de serie.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private void guardarFacturaEnBaseDeDatos(String nombreCliente, String direccion, String telefono, String email, String nitCi, Object[][] productos, double total) {
+        String url = "jdbc:mysql://localhost:3306/tienda";
+        String usuario = "root";
+        String contraseña = "zznk";
+
+        try (Connection connection = DriverManager.getConnection(url, usuario, contraseña)) {
+            String productosString = convertirProductosAString(productos);
+            String sql = "INSERT INTO facturas (nombre_cliente, direccion, telefono, email, nit_ci, productos, total, usuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                statement.setString(1, nombreCliente);
+                statement.setString(2, direccion);
+                statement.setString(3, telefono);
+                statement.setString(4, email);
+                statement.setString(5, nitCi);
+                statement.setString(6, productosString);
+                statement.setDouble(7, total);
+                statement.setString(8, "usuarioActual"); // Reemplaza con el nombre del usuario actual
+
+                statement.executeUpdate();
+
+                // Obtener la clave primaria generada para la factura
+                ResultSet generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    long facturaId = generatedKeys.getLong(1);
+                    // Actualizar stock de productos
+                    actualizarStock(connection, productos);
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar la factura en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private String convertirProductosAString(Object[][] productos) {
+        StringBuilder sb = new StringBuilder();
+        for (Object[] producto : productos) {
+            sb.append(producto[0]).append(" - ").append(producto[1]).append(" - ").append(producto[2]).append("\n");
+        }
+        return sb.toString();
+    }
+
+    private void actualizarStock(Connection connection, Object[][] productos) throws SQLException {
+        String sql = "UPDATE productos SET stock = stock - ? WHERE nombre = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            for (Object[] producto : productos) {
+                String nombreProducto = (String) producto[0]; // Suponiendo que nombreProducto es un String
+                int cantidad = (Integer) producto[2]; // Suponiendo que cantidad es un Integer
+
+                statement.setInt(1, cantidad);
+                statement.setString(2, nombreProducto);
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        }
+    }
+
 }

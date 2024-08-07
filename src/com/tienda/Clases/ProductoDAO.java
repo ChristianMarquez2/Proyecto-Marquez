@@ -26,9 +26,6 @@ public class ProductoDAO {
                     ));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
         }
         return productos;
     }
@@ -53,9 +50,6 @@ public class ProductoDAO {
                     ));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
         }
         return productos;
     }
@@ -72,9 +66,6 @@ public class ProductoDAO {
             stmt.setInt(5, producto.getMarcaId());
             stmt.setString(6, producto.getModelo());
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
         }
     }
 
@@ -91,9 +82,6 @@ public class ProductoDAO {
             stmt.setString(6, producto.getModelo());
             stmt.setInt(7, producto.getId());
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
         }
     }
 
@@ -105,9 +93,6 @@ public class ProductoDAO {
             stmt.setInt(1, nuevoStock);
             stmt.setInt(2, productoId);
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
         }
     }
 
@@ -118,9 +103,6 @@ public class ProductoDAO {
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, productoId);
             stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
         }
     }
 
@@ -144,12 +126,10 @@ public class ProductoDAO {
                     ));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
         }
         return productos;
     }
+
     // Método para obtener todos los productos de la base de datos
     public List<Producto> obtenerProductos() throws SQLException {
         List<Producto> productos = new ArrayList<>();
@@ -168,11 +148,7 @@ public class ProductoDAO {
                         rs.getString("modelo")
                 ));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
         }
         return productos;
     }
-
 }
