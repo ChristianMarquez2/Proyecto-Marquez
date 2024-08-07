@@ -10,7 +10,7 @@ import org.mindrot.jbcrypt.BCrypt;
  * en relación con las transacciones. Incluye la capacidad de agregar usuarios y transacciones,
  * verificar contraseñas, y recuperar información sobre transacciones y productos.
  */
-public class TransacciónDAO {
+public class TransaccionDAO {
 
     /**
      * Encripta la contraseña del usuario y la almacena en la base de datos.
@@ -59,7 +59,7 @@ public class TransacciónDAO {
      * @param transacción La transacción a agregar.
      * @throws SQLException Si ocurre un error al acceder a la base de datos.
      */
-    public void agregarTransacción(Transacción transacción) throws SQLException {
+    public void agregarTransacción(Transaccion transacción) throws SQLException {
         String query = "INSERT INTO transacciones (total, cajero_id) VALUES (?, ?)";
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -101,8 +101,8 @@ public class TransacciónDAO {
      * @return Una lista de transacciones.
      * @throws SQLException Si ocurre un error al acceder a la base de datos.
      */
-    public List<Transacción> obtenerTransacciones() throws SQLException {
-        List<Transacción> transacciones = new ArrayList<>();
+    public List<Transaccion> obtenerTransacciones() throws SQLException {
+        List<Transaccion> transacciones = new ArrayList<>();
         String query = "SELECT * FROM transacciones";
         try (Connection conn = BaseDeDatos.getConnection();
              Statement stmt = conn.createStatement();
@@ -115,7 +115,7 @@ public class TransacciónDAO {
                 Cajero cajero = obtenerCajeroPorId(cajeroId);
 
                 List<Producto> productos = obtenerProductosPorTransacción(id);
-                Transacción transacción = new Transacción(id, productos, total, cajero);
+                Transaccion transacción = new Transaccion(id, productos, total, cajero);
                 transacciones.add(transacción);
             }
         }
@@ -129,7 +129,7 @@ public class TransacciónDAO {
      * @return La transacción con el identificador especificado, o {@code null} si no existe.
      * @throws SQLException Si ocurre un error al acceder a la base de datos.
      */
-    public Transacción obtenerTransacciónPorId(int transacciónId) throws SQLException {
+    public Transaccion obtenerTransacciónPorId(int transacciónId) throws SQLException {
         String query = "SELECT * FROM transacciones WHERE id = ?";
         try (Connection conn = BaseDeDatos.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -143,7 +143,7 @@ public class TransacciónDAO {
 
                     List<Producto> productos = obtenerProductosPorTransacción(transacciónId);
 
-                    return new Transacción(transacciónId, productos, total, cajero);
+                    return new Transaccion(transacciónId, productos, total, cajero);
                 }
             }
         }

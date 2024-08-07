@@ -26,10 +26,10 @@ public class Cajero extends Usuario {
      * @param productos La lista de productos a registrar en la transacción.
      */
     public void registrarTransacción(List<Producto> productos) {
-        TransacciónDAO transacciónDAO = new TransacciónDAO();
+        TransaccionDAO transacciónDAO = new TransaccionDAO();
         ProductoDAO productoDAO = new ProductoDAO();
         double total = calcularTotal(productos);
-        Transacción transacción = new Transacción(0, productos, total, this);
+        Transaccion transacción = new Transaccion(0, productos, total, this);
 
         try {
             transacciónDAO.agregarTransacción(transacción);
@@ -64,9 +64,9 @@ public class Cajero extends Usuario {
      * @param transacciónId El ID de la transacción a ver.
      */
     public void verDetalleTransacción(int transacciónId) {
-        TransacciónDAO transacciónDAO = new TransacciónDAO();
+        TransaccionDAO transacciónDAO = new TransaccionDAO();
         try {
-            Transacción transacción = transacciónDAO.obtenerTransacciónPorId(transacciónId);
+            Transaccion transacción = transacciónDAO.obtenerTransacciónPorId(transacciónId);
             System.out.println("Transacción ID: " + transacción.getId());
             System.out.println("Cajero: " + transacción.getCajero().getNombre());
             System.out.println("Productos:");

@@ -7,7 +7,7 @@ import java.util.List;
  * Una transacción incluye una lista de productos comprados, el total de la compra,
  * y el cajero que realizó la transacción.
  */
-public class Transacción {
+public class Transaccion {
     private int id;
     private List<Producto> productos;
     private double total;
@@ -21,7 +21,7 @@ public class Transacción {
      * @param total El total de la transacción.
      * @param cajero El cajero que realizó la transacción.
      */
-    public Transacción(int id, List<Producto> productos, double total, Cajero cajero) {
+    public Transaccion(int id, List<Producto> productos, double total, Cajero cajero) {
         this.id = id;
         this.productos = productos;
         this.total = total;

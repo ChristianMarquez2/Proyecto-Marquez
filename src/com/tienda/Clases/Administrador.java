@@ -109,9 +109,9 @@ public class Administrador extends Usuario {
      * @param transacciónId el ID de la transacción a mostrar
      */
     public void verDetalleTransacción(int transacciónId) {
-        TransacciónDAO transacciónDAO = new TransacciónDAO();
+        TransaccionDAO transacciónDAO = new TransaccionDAO();
         try {
-            Transacción transacción = transacciónDAO.obtenerTransacciónPorId(transacciónId);
+            Transaccion transacción = transacciónDAO.obtenerTransacciónPorId(transacciónId);
             logger.info("Transacción ID: " + transacción.getId());
             logger.info("Cajero: " + transacción.getCajero().getNombre());
             logger.info("Productos:");
@@ -222,9 +222,9 @@ public class Administrador extends Usuario {
      * Genera un informe en PDF de las ventas.
      */
     public void generarInformeVentas() {
-        TransacciónDAO transacciónDAO = new TransacciónDAO();
+        TransaccionDAO transacciónDAO = new TransaccionDAO();
         try {
-            List<Transacción> transacciones = transacciónDAO.obtenerTransacciones();
+            List<Transaccion> transacciones = transacciónDAO.obtenerTransacciones();
             String fileName = "Informe_Ventas.pdf";
             Document document = new Document();
             try (FileOutputStream fos = new FileOutputStream(fileName)) {
@@ -237,7 +237,7 @@ public class Administrador extends Usuario {
                 table.addCell("Cajero");
                 table.addCell("Total");
 
-                for (Transacción transacción : transacciones) {
+                for (Transaccion transacción : transacciones) {
                     table.addCell(String.valueOf(transacción.getId()));
                     table.addCell(transacción.getCajero().getNombre());
                     table.addCell(String.valueOf(transacción.getTotal()));
