@@ -1,31 +1,46 @@
 package com.tienda.Clases;
 
 import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.*;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class GeneradorPDF {
 
-    public static void generarFactura(String nombreCliente, String direccion, String telefono, String email, String nitCi, Object[][] productos, double total, String rutaArchivo) throws IOException, DocumentException{
+    private static int numeroSerie = 1; // Número de serie para las facturas
+
+    public static void generarFactura(String nombreCliente, String direccion, String telefono, String email, String nitCi, Object[][] productos, double total, String rutaArchivo) throws IOException, DocumentException {
         Document document = new Document();
 
         try {
-            PdfWriter.getInstance(document, new FileOutputStream(rutaArchivo));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(rutaArchivo));
             document.open();
 
             Font titleFont = new Font(Font.FontFamily.HELVETICA, 24, Font.BOLD);
             Font headerFont = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
             Font regularFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL);
+            Font footerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
 
-            document.add(new Paragraph("Factura", titleFont));
+            // Agregar el logo
+            Image logo = Image.getInstance("C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\LogoCell.png"); // Asegúrate de que la ruta sea correcta
+            logo.scaleToFit(200, 100);
+            logo.setAlignment(Image.ALIGN_CENTER);
+            document.add(logo);
+
+            // Título y comprobante
+            document.add(new Paragraph("Comprobante de Venta", titleFont));
             document.add(new Paragraph(" "));
+            document.add(new Paragraph("Fecha: " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()), regularFont));
+            document.add(new Paragraph("Número de Serie: " + String.format("%04d", numeroSerie++), regularFont));
+            document.add(new Paragraph(" "));
+
+            // Información del cliente
             document.add(new Paragraph("Nombre del Cliente: " + nombreCliente, regularFont));
             document.add(new Paragraph("Dirección: " + direccion, regularFont));
             document.add(new Paragraph("Teléfono: " + telefono, regularFont));
@@ -33,6 +48,7 @@ public class GeneradorPDF {
             document.add(new Paragraph("NIT/CI: " + nitCi, regularFont));
             document.add(new Paragraph(" "));
 
+            // Tabla de productos
             PdfPTable table = new PdfPTable(3);
             table.setWidthPercentage(100);
             table.setSpacingBefore(10f);
@@ -52,10 +68,15 @@ public class GeneradorPDF {
             document.add(table);
             document.add(new Paragraph(" "));
             document.add(new Paragraph("Total: $" + String.format("%.2f", total), regularFont));
+            document.add(new Paragraph(" "));
 
-            // Guardar la factura en la base de datos
-            //guardarFactura(nombreCliente, direccion, telefono, email, nitCi, productos, total, usuario);
+            // Información de contacto
+            document.add(new Paragraph("+593 980865549", footerFont));
+            document.add(new Paragraph("celltechhub@gmail.com", footerFont));
+            document.add(new Paragraph("www.TechHub.com", footerFont));
 
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprimir el stack trace en caso de error
         } finally {
             if (document.isOpen()) {
                 document.close();

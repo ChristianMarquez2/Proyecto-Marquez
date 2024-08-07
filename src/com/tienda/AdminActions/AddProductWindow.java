@@ -41,6 +41,14 @@ public class AddProductWindow extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
+        // Inicializar campos de texto
+        nameField = new JTextField(20);
+        priceField = new JTextField(20);
+        stockField = new JTextField(20);
+        brandField = new JTextField(20);
+        modelField = new JTextField(20);
+        imageField = new JTextField(20);
+
         // Etiquetas y campos
         String[] labels = {"Nombre:", "Precio:", "Stock:", "Marca:", "Modelo:", "Imagen:"};
         JTextField[] fields = {nameField, priceField, stockField, brandField, modelField, imageField};
@@ -52,7 +60,6 @@ public class AddProductWindow extends JFrame {
             JLabel label = new JLabel(labels[i]);
             formPanel.add(label, gbc);
             gbc.gridx = 1;
-            fields[i] = new JTextField(20);
             formPanel.add(fields[i], gbc);
             gbc.gridx = 0;
             gbc.gridy++;
