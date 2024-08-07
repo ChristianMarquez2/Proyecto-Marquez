@@ -11,6 +11,11 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Panel de interfaz gráfica para la selección y visualización de productos.
+ * Permite filtrar productos por marca y modelo, y muestra los detalles del producto en una tabla.
+ * Incluye opciones para agregar productos al carrito y ver imágenes de los productos.
+ */
 public class ProductPanel extends JPanel {
     private JComboBox<String> marcaComboBox;
     private JComboBox<String> modeloComboBox;
@@ -18,6 +23,10 @@ public class ProductPanel extends JPanel {
     private DefaultTableModel tableModel;
     private ProductoDAO productoDAO;
 
+    /**
+     * Constructor que inicializa el panel y configura los componentes.
+     * Configura el diseño, agrega los filtros de marca y modelo, y configura la tabla y los botones.
+     */
     public ProductPanel() {
         setLayout(new BorderLayout());
 
@@ -25,7 +34,7 @@ public class ProductPanel extends JPanel {
 
         // Panel de filtros
         JPanel filterPanel = new JPanel();
-        filterPanel.setLayout(new GridLayout(2, 2, 10, 10)); // Añadido espaciado entre componentes
+        filterPanel.setLayout(new GridLayout(2, 2, 10, 10));
 
         filterPanel.add(new JLabel("Marca:"));
         marcaComboBox = new JComboBox<>(new String[]{"Apple", "Samsung", "Sony", "Xiaomi", "Huawei"});
@@ -43,7 +52,7 @@ public class ProductPanel extends JPanel {
         tableModel = new DefaultTableModel(new Object[]{"Nombre", "Precio", "Stock", "Imagen"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Evitar la edición de celdas
+                return false;
             }
         };
         productTable = new JTable(tableModel);
@@ -64,11 +73,9 @@ public class ProductPanel extends JPanel {
         btnAddToCart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Implementar la lógica para agregar productos al carrito
                 int selectedRow = productTable.getSelectedRow();
                 if (selectedRow >= 0) {
                     String productoNombre = (String) tableModel.getValueAt(selectedRow, 0);
-                    // Aquí iría la lógica para agregar el producto al carrito
                     JOptionPane.showMessageDialog(ProductPanel.this, "Producto '" + productoNombre + "' agregado al carrito.");
                 } else {
                     JOptionPane.showMessageDialog(ProductPanel.this, "Seleccione un producto para agregar al carrito.");
@@ -79,7 +86,6 @@ public class ProductPanel extends JPanel {
         btnViewImages.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Implementar la lógica para ver imágenes de productos
                 int selectedRow = productTable.getSelectedRow();
                 if (selectedRow >= 0) {
                     String imagenPath = (String) tableModel.getValueAt(selectedRow, 3);
@@ -102,13 +108,16 @@ public class ProductPanel extends JPanel {
         });
     }
 
+    /**
+     * Listener para el cambio de selección en el JComboBox de marcas.
+     * Actualiza el JComboBox de modelos con los modelos disponibles para la marca seleccionada.
+     */
     private class MarcaActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String marcaSeleccionada = (String) marcaComboBox.getSelectedItem();
             modeloComboBox.removeAllItems();
 
-            // Añadir modelos según la marca seleccionada
             try {
                 List<Producto> productos = productoDAO.obtenerProductosPorMarca(obtenerMarcaId(marcaSeleccionada));
                 for (Producto producto : productos) {
@@ -121,13 +130,16 @@ public class ProductPanel extends JPanel {
         }
     }
 
+    /**
+     * Listener para el cambio de selección en el JComboBox de modelos.
+     * Actualiza la tabla de productos con los productos disponibles para el modelo seleccionado.
+     */
     private class ModeloActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             String modeloSeleccionado = (String) modeloComboBox.getSelectedItem();
             tableModel.setRowCount(0); // Limpiar la tabla
 
-            // Mostrar productos según el modelo seleccionado
             try {
                 List<Producto> productos = productoDAO.obtenerProductosPorModelo(modeloSeleccionado);
                 for (Producto producto : productos) {
@@ -140,6 +152,12 @@ public class ProductPanel extends JPanel {
         }
     }
 
+    /**
+     * Convierte el nombre de la marca en un ID para consultar la base de datos.
+     *
+     * @param marcaNombre Nombre de la marca.
+     * @return ID de la marca correspondiente, o -1 si la marca no es reconocida.
+     */
     private int obtenerMarcaId(String marcaNombre) {
         switch (marcaNombre) {
             case "Apple":
@@ -153,7 +171,7 @@ public class ProductPanel extends JPanel {
             case "Huawei":
                 return 5;
             default:
-                return -1; // Manejo por defecto para marcas no encontradas
+                return -1;
         }
     }
 }

@@ -5,9 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 
+/**
+ * La clase {@code TransacciónDAO} proporciona métodos para interactuar con la base de datos
+ * en relación con las transacciones. Incluye la capacidad de agregar usuarios y transacciones,
+ * verificar contraseñas, y recuperar información sobre transacciones y productos.
+ */
 public class TransacciónDAO {
 
-    // Método para encriptar la contraseña antes de almacenarla (considerar mover a una clase de usuario)
+    /**
+     * Encripta la contraseña del usuario y la almacena en la base de datos.
+     *
+     * @param usuario El usuario cuyo contraseña se va a almacenar.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public void agregarUsuario(Usuario usuario) throws SQLException {
         String hashedPassword = BCrypt.hashpw(usuario.getContraseña(), BCrypt.gensalt());
         String query = "INSERT INTO usuarios (nombre, rol, contraseña) VALUES (?, ?, ?)";
@@ -20,7 +30,14 @@ public class TransacciónDAO {
         }
     }
 
-    // Método para verificar la contraseña durante el login (considerar mover a una clase de usuario)
+    /**
+     * Verifica si la contraseña proporcionada coincide con la almacenada en la base de datos.
+     *
+     * @param nombreUsuario El nombre del usuario.
+     * @param contraseña La contraseña proporcionada por el usuario.
+     * @return {@code true} si la contraseña es correcta, {@code false} en caso contrario.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public boolean verificarContraseña(String nombreUsuario, String contraseña) throws SQLException {
         String query = "SELECT contraseña FROM usuarios WHERE nombre = ?";
         try (Connection conn = BaseDeDatos.getConnection();
@@ -36,7 +53,12 @@ public class TransacciónDAO {
         return false;
     }
 
-    // Método para agregar una nueva transacción a la base de datos
+    /**
+     * Agrega una nueva transacción a la base de datos.
+     *
+     * @param transacción La transacción a agregar.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public void agregarTransacción(Transacción transacción) throws SQLException {
         String query = "INSERT INTO transacciones (total, cajero_id) VALUES (?, ?)";
         try (Connection conn = BaseDeDatos.getConnection();
@@ -56,7 +78,13 @@ public class TransacciónDAO {
         }
     }
 
-    // Método privado para agregar una relación producto-transacción
+    /**
+     * Agrega una relación entre una transacción y un producto.
+     *
+     * @param transacciónId El identificador de la transacción.
+     * @param productoId El identificador del producto.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     private void agregarProductoTransacción(int transacciónId, int productoId) throws SQLException {
         String query = "INSERT INTO productos_transacciones (transacción_id, producto_id) VALUES (?, ?)";
         try (Connection conn = BaseDeDatos.getConnection();
@@ -67,7 +95,12 @@ public class TransacciónDAO {
         }
     }
 
-    // Método para obtener todas las transacciones de la base de datos
+    /**
+     * Obtiene todas las transacciones almacenadas en la base de datos.
+     *
+     * @return Una lista de transacciones.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public List<Transacción> obtenerTransacciones() throws SQLException {
         List<Transacción> transacciones = new ArrayList<>();
         String query = "SELECT * FROM transacciones";
@@ -79,19 +112,23 @@ public class TransacciónDAO {
                 double total = rs.getDouble("total");
                 int cajeroId = rs.getInt("cajero_id");
 
-                // Crear un objeto Cajero para asociarlo con la transacción
                 Cajero cajero = obtenerCajeroPorId(cajeroId);
 
-                // Crear y agregar la transacción a la lista
-                List<Producto> productos = obtenerProductosPorTransacción(id); // Obtener productos primero
-                Transacción transacción = new Transacción(id, productos, total, cajero); // Crear Transacción
+                List<Producto> productos = obtenerProductosPorTransacción(id);
+                Transacción transacción = new Transacción(id, productos, total, cajero);
                 transacciones.add(transacción);
             }
         }
         return transacciones;
     }
 
-    // Método para obtener una transacción por ID
+    /**
+     * Obtiene una transacción específica por su identificador.
+     *
+     * @param transacciónId El identificador de la transacción.
+     * @return La transacción con el identificador especificado, o {@code null} si no existe.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     public Transacción obtenerTransacciónPorId(int transacciónId) throws SQLException {
         String query = "SELECT * FROM transacciones WHERE id = ?";
         try (Connection conn = BaseDeDatos.getConnection();
@@ -102,21 +139,24 @@ public class TransacciónDAO {
                     double total = rs.getDouble("total");
                     int cajeroId = rs.getInt("cajero_id");
 
-                    // Crear un objeto Cajero para asociarlo con la transacción
                     Cajero cajero = obtenerCajeroPorId(cajeroId);
 
-                    // Obtener productos asociados a la transacción
                     List<Producto> productos = obtenerProductosPorTransacción(transacciónId);
 
-                    // Crear y devolver la transacción
                     return new Transacción(transacciónId, productos, total, cajero);
                 }
             }
         }
-        return null; // o lanzar una excepción si no se encuentra
+        return null;
     }
 
-    // Método privado para obtener un Cajero por ID
+    /**
+     * Obtiene un cajero específico por su identificador.
+     *
+     * @param cajeroId El identificador del cajero.
+     * @return El cajero con el identificador especificado, o {@code null} si no existe.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     private Cajero obtenerCajeroPorId(int cajeroId) throws SQLException {
         String query = "SELECT * FROM usuarios WHERE id = ? AND rol = 'Cajero'";
         try (Connection conn = BaseDeDatos.getConnection();
@@ -124,20 +164,24 @@ public class TransacciónDAO {
             stmt.setInt(1, cajeroId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    // Obtener datos del resultado
                     int id = rs.getInt("id");
                     String nombre = rs.getString("nombre");
-                    String contraseña = rs.getString("contraseña"); // Obtener la contraseña
+                    String contraseña = rs.getString("contraseña");
 
-                    // Crear y devolver el objeto Cajero
                     return new Cajero(id, nombre, contraseña);
                 }
             }
         }
-        return null; // o lanzar una excepción si no se encuentra
+        return null;
     }
 
-    // Método privado para obtener productos asociados a una transacción
+    /**
+     * Obtiene todos los productos asociados a una transacción específica.
+     *
+     * @param transacciónId El identificador de la transacción.
+     * @return Una lista de productos asociados a la transacción.
+     * @throws SQLException Si ocurre un error al acceder a la base de datos.
+     */
     private List<Producto> obtenerProductosPorTransacción(int transacciónId) throws SQLException {
         List<Producto> productos = new ArrayList<>();
         String query = "SELECT p.* FROM productos p " +

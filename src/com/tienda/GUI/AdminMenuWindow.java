@@ -5,13 +5,18 @@ import com.tienda.CajeroActions.CartWindow;
 import com.tienda.CajeroActions.SettingsWindow;
 import com.tienda.Clases.Administrador;
 import com.tienda.Clases.AdminReportsWindow;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+/**
+ * La clase {@code AdminMenuWindow} representa la ventana principal del menú para el administrador en la aplicación.
+ * Esta ventana proporciona acceso a diversas funcionalidades administrativas, incluyendo la visualización y adición de productos,
+ * la gestión de usuarios y la generación de reportes.
+ */
 public class AdminMenuWindow extends JFrame {
+
     private Administrador administrador;
     private JPanel navigationPanel;
     private JButton productButton;
@@ -27,6 +32,11 @@ public class AdminMenuWindow extends JFrame {
     private JLabel logoLabel;
     private CartWindow cartWindow;
 
+    /**
+     * Crea una instancia de {@code AdminMenuWindow} y configura la ventana principal para el administrador.
+     *
+     * @param administrador El objeto {@code Administrador} asociado a esta ventana.
+     */
     public AdminMenuWindow(Administrador administrador) {
         this.administrador = administrador;
         setTitle("Menú Principal - Administrador");
@@ -44,9 +54,9 @@ public class AdminMenuWindow extends JFrame {
 
         // Panel superior para el título y el logo
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(new Color(30, 144, 255)); // Azul oscuro
+        topPanel.setBackground(new Color(30, 144, 255));
 
-        ImageIcon logoIcon = new ImageIcon("src/com/tienda/Imagenes/LogoCell.png"); // Ruta al archivo del logo
+        ImageIcon logoIcon = new ImageIcon("src/com/tienda/Imagenes/LogoCell.png");
         logoLabel = new JLabel(logoIcon);
         topPanel.add(logoLabel, BorderLayout.WEST);
 
@@ -87,49 +97,78 @@ public class AdminMenuWindow extends JFrame {
         navigationPanel.add(settingsButton);
         navigationPanel.add(logoutButton);
 
-        // Agregar paneles al marco
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(navigationPanel, BorderLayout.CENTER);
 
         add(mainPanel);
     }
 
-    // Método auxiliar para crear botones de navegación con iconos
+    /**
+     * Crea un botón de navegación con texto, icono y acción asociada.
+     *
+     * @param text El texto del botón.
+     * @param iconPath La ruta del icono para el botón.
+     * @param actionListener El {@code ActionListener} asociado al botón.
+     * @return El botón creado.
+     */
     private JButton createNavigationButton(String text, String iconPath, ActionListener actionListener) {
         JButton button = new JButton(text);
-        button.setIcon(createScaledIcon(iconPath, 30, 30)); // Redimensiona el icono a 30x30 píxeles
+        button.setIcon(createScaledIcon(iconPath, 30, 30));
         button.setHorizontalAlignment(SwingConstants.LEFT);
-        button.setPreferredSize(new Dimension(200, 50)); // Tamaño ajustado
+        button.setPreferredSize(new Dimension(200, 50));
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.setBackground(new Color(240, 240, 240));
-        button.setBorder(createRoundedBorder(15)); // Bordes redondeados
+        button.setBorder(createRoundedBorder(15));
         button.setFocusPainted(false);
         button.addActionListener(actionListener);
         return button;
     }
 
+    /**
+     * Crea un {@code ImageIcon} escalado con el tamaño especificado.
+     *
+     * @param imagePath La ruta de la imagen.
+     * @param width El ancho deseado.
+     * @param height La altura deseada.
+     * @return El {@code ImageIcon} escalado.
+     */
     private ImageIcon createScaledIcon(String imagePath, int width, int height) {
-        // Carga la imagen original
         ImageIcon originalIcon = new ImageIcon(imagePath);
         Image image = originalIcon.getImage();
-        // Escala la imagen al tamaño deseado
         Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        // Crea un nuevo ImageIcon con la imagen escalada
         return new ImageIcon(scaledImage);
     }
 
+    /**
+     * Crea un borde redondeado con el radio especificado.
+     *
+     * @param radius El radio del borde redondeado.
+     * @return El borde redondeado creado.
+     */
     private Border createRoundedBorder(int radius) {
         return new RoundedBorder(radius);
     }
 
+    /**
+     * El punto de entrada de la aplicación. Crea y muestra una instancia de {@code AdminMenuWindow}.
+     *
+     * @param args Los argumentos de línea de comandos.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new AdminMenuWindow(new Administrador(1, "Admin", "password")).setVisible(true));
     }
 
-    // Clase interna para bordes redondeados
+    /**
+     * La clase {@code RoundedBorder} implementa un borde redondeado para los componentes.
+     */
     private static class RoundedBorder implements Border {
         private int radius;
 
+        /**
+         * Crea un {@code RoundedBorder} con el radio especificado.
+         *
+         * @param radius El radio del borde redondeado.
+         */
         RoundedBorder(int radius) {
             this.radius = radius;
         }

@@ -9,7 +9,15 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * La clase {@code ProductSelectionWindow} representa una ventana en la interfaz de usuario para la selección de productos.
+ * Permite al usuario seleccionar una marca y un modelo de producto para visualizar los productos disponibles y añadirlos al carrito.
+ * Utiliza un {@link JComboBox} para la selección de marcas y modelos, una {@link JTable} para mostrar los productos,
+ * y un {@link JLabel} para mostrar la imagen del producto seleccionado.
+ * Además, proporciona la funcionalidad de añadir productos al carrito de compras.
+ */
 public class ProductSelectionWindow extends JFrame {
+
     private JComboBox<String> marcaComboBox;
     private JComboBox<String> modeloComboBox;
     private JTable productoTable;
@@ -18,6 +26,11 @@ public class ProductSelectionWindow extends JFrame {
     private ProductoDAO productoDAO;
     private CartWindow cartWindow;
 
+    /**
+     * Crea una nueva instancia de {@code ProductSelectionWindow}.
+     *
+     * @param cartWindow La ventana del carrito de compras donde se añadirán los productos seleccionados.
+     */
     public ProductSelectionWindow(CartWindow cartWindow) {
         setTitle("Selección de Productos");
         setSize(800, 600);
@@ -25,7 +38,6 @@ public class ProductSelectionWindow extends JFrame {
         setLocationRelativeTo(null);
 
         this.cartWindow = cartWindow;
-
         productoDAO = new ProductoDAO();
 
         // Panel principal
@@ -71,7 +83,6 @@ public class ProductSelectionWindow extends JFrame {
         productoTable.setPreferredScrollableViewportSize(new Dimension(750, 300));
         mainPanel.add(new JScrollPane(productoTable), BorderLayout.CENTER);
 
-        // Etiqueta para mostrar imagen del producto
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         mainPanel.add(imageLabel, BorderLayout.SOUTH);
@@ -87,15 +98,18 @@ public class ProductSelectionWindow extends JFrame {
 
         add(mainPanel);
 
-        // Cargar modelos al iniciar
         actualizarModelos();
     }
 
+    /**
+     * Actualiza el contenido del {@code modeloComboBox} con los modelos disponibles para la marca seleccionada.
+     * Consulta la base de datos a través del {@link ProductoDAO} para obtener los modelos correspondientes.
+     * En caso de error, muestra un mensaje de advertencia al usuario.
+     */
     private void actualizarModelos() {
         String marcaSeleccionada = (String) marcaComboBox.getSelectedItem();
         modeloComboBox.removeAllItems();
 
-        // Añadir modelos según la marca seleccionada
         try {
             List<Producto> productos = productoDAO.obtenerProductosPorMarca(obtenerMarcaId(marcaSeleccionada));
             for (Producto producto : productos) {
@@ -104,7 +118,6 @@ public class ProductSelectionWindow extends JFrame {
             if (modeloComboBox.getItemCount() == 0) {
                 modeloComboBox.addItem("No hay modelos disponibles");
             }
-            // Mostrar todos los productos si no hay modelo seleccionado
             mostrarProductos();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -112,17 +125,21 @@ public class ProductSelectionWindow extends JFrame {
         }
     }
 
+    /**
+     * Muestra los productos disponibles en la {@code productoTable} según el modelo seleccionado.
+     * Si no se selecciona un modelo específico, se muestran los productos para la marca seleccionada.
+     * En caso de error, muestra un mensaje de advertencia al usuario.
+     */
     private void mostrarProductos() {
         String modeloSeleccionado = (String) modeloComboBox.getSelectedItem();
-        tableModel.setRowCount(0); // Limpiar la tabla
-        imageLabel.setIcon(null); // Limpiar la imagen
+        tableModel.setRowCount(0);
+        imageLabel.setIcon(null);
 
         try {
             List<Producto> productos;
             if (modeloSeleccionado != null && !modeloSeleccionado.equals("No hay modelos disponibles")) {
                 productos = productoDAO.obtenerProductosPorModelo(modeloSeleccionado);
             } else {
-                // Mostrar todos los productos si el modelo seleccionado es "No hay modelos disponibles" o null
                 productos = productoDAO.obtenerProductosPorMarca(obtenerMarcaId((String) marcaComboBox.getSelectedItem()));
             }
 
@@ -136,9 +153,6 @@ public class ProductSelectionWindow extends JFrame {
                             "$" + producto.getPrecio(),
                             producto.getStock()
                     });
-                    // Cargar imagen del producto (si tienes una ruta a la imagen)
-                    // ImageIcon productImage = new ImageIcon("ruta/a/imagen.png");
-                    // imageLabel.setIcon(productImage);
                 }
             }
         } catch (SQLException ex) {
@@ -147,18 +161,29 @@ public class ProductSelectionWindow extends JFrame {
         }
     }
 
+    /**
+     * Añade el producto seleccionado en la {@code productoTable} al carrito de compras.
+     * El producto se añade con una cantidad de 1 unidad.
+     * Si no se selecciona ningún producto, muestra un mensaje de advertencia al usuario.
+     */
     private void addProductToCart() {
         int selectedRow = productoTable.getSelectedRow();
         if (selectedRow >= 0) {
             String nombre = (String) tableModel.getValueAt(selectedRow, 0);
             String modelo = (String) tableModel.getValueAt(selectedRow, 1);
             double precio = Double.parseDouble(((String) tableModel.getValueAt(selectedRow, 2)).replace("$", ""));
-            cartWindow.addProductToCart(nombre, modelo, precio, 1); // Agrega al carrito con cantidad 1
+            cartWindow.addProductToCart(nombre, modelo, precio, 1);
         } else {
             JOptionPane.showMessageDialog(this, "Seleccione un producto para añadir al carrito.", "Advertencia", JOptionPane.WARNING_MESSAGE);
         }
     }
 
+    /**
+     * Devuelve el identificador numérico de la marca según su nombre.
+     *
+     * @param marcaNombre El nombre de la marca.
+     * @return El identificador numérico de la marca.
+     */
     private int obtenerMarcaId(String marcaNombre) {
         switch (marcaNombre) {
             case "Samsung":

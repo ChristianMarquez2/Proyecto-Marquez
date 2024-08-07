@@ -1,7 +1,6 @@
 package com.tienda.CajeroActions;
 
 import com.tienda.Clases.GeneradorPDF;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -11,6 +10,11 @@ import java.io.*;
 import java.sql.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Ventana para generar una factura.
+ * Esta ventana muestra los detalles del carrito de compras, permite ingresar datos del cliente,
+ * genera un archivo PDF con la factura y guarda los datos en la base de datos.
+ */
 public class InvoiceWindow extends JFrame {
     private JTable invoiceTable;
     private DefaultTableModel tableModel;
@@ -18,6 +22,12 @@ public class InvoiceWindow extends JFrame {
     private JLabel totalLabel;
     private AtomicInteger serieNumber;
 
+    /**
+     * Crea una nueva ventana de factura.
+     *
+     * @param cartData Datos del carrito de compras para la factura.
+     * @param total    Total de la compra.
+     */
     public InvoiceWindow(Object[][] cartData, String total) {
         setTitle("Generar Factura");
         setSize(900, 600);
@@ -132,7 +142,7 @@ public class InvoiceWindow extends JFrame {
                     fileChooser.setSelectedFile(new File(nombreArchivo + ".pdf"));
                     int userSelection = fileChooser.showSaveDialog(InvoiceWindow.this);
                     if (userSelection != JFileChooser.APPROVE_OPTION) {
-                        return; // Usuario canceló el diálogo
+                        return;
                     }
                     String rutaArchivo = fileChooser.getSelectedFile().getAbsolutePath();
 
@@ -156,13 +166,17 @@ public class InvoiceWindow extends JFrame {
         btnCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose(); // Cierra la ventana actual
+                dispose();
             }
         });
     }
 
+    /**
+     * Obtiene los datos del carrito de compras en formato de matriz.
+     *
+     * @return Una matriz de objetos que representa los datos del carrito.
+     */
     private Object[][] getCartData() {
-        // Convertir los datos de la tabla a un formato adecuado para generar el PDF
         int rowCount = tableModel.getRowCount();
         int columnCount = tableModel.getColumnCount();
         Object[][] data = new Object[rowCount][columnCount];
@@ -175,14 +189,24 @@ public class InvoiceWindow extends JFrame {
         return data;
     }
 
+    /**
+     * Carga el número de serie desde un archivo.
+     *
+     * @return El número de serie actual.
+     */
     private int loadSerieNumber() {
         try (BufferedReader reader = new BufferedReader(new FileReader("serie.txt"))) {
             return Integer.parseInt(reader.readLine());
         } catch (IOException | NumberFormatException e) {
-            return 1; // Valor por defecto si no se puede leer el archivo
+            return 1;
         }
     }
 
+    /**
+     * Guarda el número de serie en un archivo.
+     *
+     * @param number El número de serie a guardar.
+     */
     private void saveSerieNumber(int number) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("serie.txt"))) {
             writer.write(String.valueOf(number));
@@ -191,6 +215,17 @@ public class InvoiceWindow extends JFrame {
         }
     }
 
+    /**
+     * Guarda los datos de la factura en la base de datos y actualiza el stock de los productos.
+     *
+     * @param nombreCliente Nombre del cliente.
+     * @param direccion     Dirección del cliente.
+     * @param telefono      Teléfono del cliente.
+     * @param email         Email del cliente.
+     * @param nitCi         NIT/CI del cliente.
+     * @param productos     Datos de los productos de la factura.
+     * @param total         Total de la factura.
+     */
     private void guardarFacturaEnBaseDeDatos(String nombreCliente, String direccion, String telefono, String email, String nitCi, Object[][] productos, double total) {
         String url = "jdbc:mysql://localhost:3306/tienda";
         String usuario = "root";
@@ -207,45 +242,61 @@ public class InvoiceWindow extends JFrame {
                 statement.setString(5, nitCi);
                 statement.setString(6, productosString);
                 statement.setDouble(7, total);
-                statement.setString(8, "usuarioActual"); // Reemplaza con el nombre del usuario actual
+                statement.setString(8, "NombreUsuario"); // Cambiar a usuario real
 
-                statement.executeUpdate();
-
-                // Obtener la clave primaria generada para la factura
-                ResultSet generatedKeys = statement.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    long facturaId = generatedKeys.getLong(1);
-                    // Actualizar stock de productos
-                    actualizarStock(connection, productos);
+                int affectedRows = statement.executeUpdate();
+                if (affectedRows > 0) {
+                    try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            int facturaId = generatedKeys.getInt(1);
+                            actualizarStock(productos);
+                        }
+                    }
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al guardar la factura en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
 
+    /**
+     * Convierte los datos de los productos en una cadena para guardar en la base de datos.
+     *
+     * @param productos Datos de los productos.
+     * @return Cadena que representa los productos.
+     */
     private String convertirProductosAString(Object[][] productos) {
         StringBuilder sb = new StringBuilder();
         for (Object[] producto : productos) {
-            sb.append(producto[0]).append(" - ").append(producto[1]).append(" - ").append(producto[2]).append("\n");
+            sb.append(producto[0]).append(" - ").append(producto[1]).append(" - ").append(producto[2]).append(" | ");
         }
         return sb.toString();
     }
 
-    private void actualizarStock(Connection connection, Object[][] productos) throws SQLException {
-        String sql = "UPDATE productos SET stock = stock - ? WHERE nombre = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            for (Object[] producto : productos) {
-                String nombreProducto = (String) producto[0]; // Suponiendo que nombreProducto es un String
-                int cantidad = (Integer) producto[2]; // Suponiendo que cantidad es un Integer
+    /**
+     * Actualiza el stock de los productos en la base de datos después de una venta.
+     *
+     * @param productos Datos de los productos vendidos.
+     */
+    private void actualizarStock(Object[][] productos) {
+        String url = "jdbc:mysql://localhost:3306/tienda";
+        String usuario = "root";
+        String contraseña = "zznk";
 
-                statement.setInt(1, cantidad);
-                statement.setString(2, nombreProducto);
-                statement.addBatch();
+        try (Connection connection = DriverManager.getConnection(url, usuario, contraseña)) {
+            String sql = "UPDATE productos SET stock = stock - ? WHERE nombre = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                for (Object[] producto : productos) {
+                    String nombreProducto = (String) producto[0];
+                    int cantidad = (Integer) producto[2];
+                    statement.setInt(1, cantidad);
+                    statement.setString(2, nombreProducto);
+                    statement.addBatch();
+                }
+                statement.executeBatch();
             }
-            statement.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-
 }

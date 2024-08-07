@@ -1,5 +1,7 @@
 package com.tienda.Clases;
 
+
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
@@ -13,20 +15,39 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * La clase Administrador representa a un usuario con privilegios de administrador en la tienda.
+ * <p>
+ * Un administrador puede agregar, actualizar y eliminar productos y usuarios,
+ * así como generar informes de inventario y ventas.
+ * </p>
+ */
 public class Administrador extends Usuario {
     private static final Logger logger = LoggerFactory.getLogger(Administrador.class);
 
-    // Constructor parametrizado
+    /**
+     * Constructor parametrizado para crear un nuevo administrador.
+     *
+     * @param id          el ID del administrador
+     * @param nombre      el nombre del administrador
+     * @param contraseña  la contraseña del administrador
+     */
     public Administrador(int id, String nombre, String contraseña) {
         super(id, nombre, contraseña, "Administrador");
     }
 
-    // Constructor sin argumentos (opcional)
+    /**
+     * Constructor por defecto que crea un administrador con valores predeterminados.
+     */
     public Administrador() {
         super(0, "Default", "default_password", "Administrador");
     }
 
-    // Método para agregar un nuevo producto
+    /**
+     * Agrega un nuevo producto a la base de datos.
+     *
+     * @param producto el producto a agregar
+     */
     public void agregarProducto(Producto producto) {
         ProductoDAO productoDAO = new ProductoDAO();
         try {
@@ -37,7 +58,11 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para actualizar un producto existente
+    /**
+     * Actualiza un producto existente en la base de datos.
+     *
+     * @param producto el producto a actualizar
+     */
     public void actualizarProducto(Producto producto) {
         ProductoDAO productoDAO = new ProductoDAO();
         try {
@@ -48,7 +73,11 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para eliminar un producto
+    /**
+     * Elimina un producto de la base de datos por su ID.
+     *
+     * @param productoId el ID del producto a eliminar
+     */
     public void eliminarProducto(int productoId) {
         ProductoDAO productoDAO = new ProductoDAO();
         try {
@@ -59,7 +88,9 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para ver todos los productos
+    /**
+     * Muestra todos los productos en la base de datos.
+     */
     public void verProductos() {
         ProductoDAO productoDAO = new ProductoDAO();
         try {
@@ -72,7 +103,11 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para ver detalles de una transacción específica
+    /**
+     * Muestra los detalles de una transacción por su ID.
+     *
+     * @param transacciónId el ID de la transacción a mostrar
+     */
     public void verDetalleTransacción(int transacciónId) {
         TransacciónDAO transacciónDAO = new TransacciónDAO();
         try {
@@ -89,7 +124,11 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para agregar un nuevo usuario
+    /**
+     * Agrega un nuevo usuario a la base de datos.
+     *
+     * @param usuario el usuario a agregar
+     */
     public void agregarUsuario(Usuario usuario) {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         try {
@@ -100,7 +139,11 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para actualizar un usuario existente
+    /**
+     * Actualiza un usuario existente en la base de datos.
+     *
+     * @param usuario el usuario a actualizar
+     */
     public void actualizarUsuario(Usuario usuario) {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         try {
@@ -111,7 +154,11 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para eliminar un usuario
+    /**
+     * Elimina un usuario de la base de datos por su ID.
+     *
+     * @param usuarioId el ID del usuario a eliminar
+     */
     public void eliminarUsuario(int usuarioId) {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         try {
@@ -122,7 +169,9 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para ver todos los usuarios
+    /**
+     * Muestra todos los usuarios en la base de datos.
+     */
     public void verUsuarios() {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         try {
@@ -135,7 +184,9 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para generar informe de inventario en PDF
+    /**
+     * Genera un informe en PDF del inventario de productos.
+     */
     public void generarInformeInventario() {
         ProductoDAO productoDAO = new ProductoDAO();
         try {
@@ -167,7 +218,9 @@ public class Administrador extends Usuario {
         }
     }
 
-    // Método para generar un informe de ventas en PDF usando iText 5.x
+    /**
+     * Genera un informe en PDF de las ventas.
+     */
     public void generarInformeVentas() {
         TransacciónDAO transacciónDAO = new TransacciónDAO();
         try {

@@ -10,6 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * Ventana para agregar un nuevo usuario al sistema.
+ * Permite ingresar el nombre de usuario, contraseña y rol.
+ */
 public class AddUserWindow extends JFrame {
 
     private JTextField usernameField, passwordField;
@@ -17,6 +21,9 @@ public class AddUserWindow extends JFrame {
     private JButton saveButton;
     private JButton cancelButton;
 
+    /**
+     * Constructor que configura la ventana para agregar un nuevo usuario.
+     */
     public AddUserWindow() {
         setTitle("Agregar Usuario");
         setSize(500, 300);
@@ -119,6 +126,10 @@ public class AddUserWindow extends JFrame {
         });
     }
 
+    /**
+     * Método para guardar un nuevo usuario en la base de datos.
+     * Obtiene los datos del formulario y los inserta en la base de datos.
+     */
     private void saveUser() {
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -128,14 +139,16 @@ public class AddUserWindow extends JFrame {
             String query = "INSERT INTO usuarios (nombre, rol, contraseña) VALUES (?, ?, ?)";
             stmt = connection.prepareStatement(query);
 
+            // Configurar los parámetros de la consulta
             stmt.setString(1, usernameField.getText());
             stmt.setString(2, (String) roleComboBox.getSelectedItem());
             stmt.setString(3, new String(((JPasswordField) passwordField).getPassword()));
 
+            // Ejecutar la consulta
             int rowsInserted = stmt.executeUpdate();
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(this, "Usuario agregado exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                dispose();
+                dispose(); // Cerrar la ventana si se guardó correctamente
             }
 
         } catch (SQLException e) {
@@ -143,6 +156,7 @@ public class AddUserWindow extends JFrame {
             JOptionPane.showMessageDialog(this, "Error al guardar el usuario", "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             try {
+                // Cerrar los recursos
                 if (stmt != null) stmt.close();
                 if (connection != null) connection.close();
             } catch (SQLException e) {

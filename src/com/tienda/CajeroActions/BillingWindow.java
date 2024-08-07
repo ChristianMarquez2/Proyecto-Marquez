@@ -10,17 +10,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+/**
+ * La clase {@code BillingWindow} representa la ventana de facturación en la aplicación.
+ * Permite ingresar datos del cliente, ver los productos y precios del carrito, y generar una factura en formato PDF.
+ * Extiende {@code JFrame} para proporcionar una ventana con formularios para los datos del cliente y una tabla
+ * para los productos y precios, así como botones para generar la factura o cancelar la operación.
+ */
 public class BillingWindow extends JFrame {
     private JTable productosTable;
     private DefaultTableModel productosTableModel;
     private JTextField nombreClienteField, direccionField, telefonoField, emailField, nitCiField;
     private ReportsWindow reportsWindow;
 
+    /**
+     * Constructor de {@code BillingWindow}.
+     * Inicializa la ventana de facturación con los datos del carrito, el total y una instancia de {@code ReportsWindow}.
+     *
+     * @param cartData      Los datos del carrito a mostrar en la tabla (matriz bidimensional de objetos).
+     * @param total         El total de la compra en formato de cadena (ej. "Total: $100.00").
+     * @param reportsWindow La ventana de reportes a actualizar con los datos de la factura.
+     */
     public BillingWindow(Object[][] cartData, String total, ReportsWindow reportsWindow) {
         this.reportsWindow = reportsWindow;
 
         setTitle("Facturación");
-        setSize(800, 600); // Aumentado para mayor espacio
+        setSize(800, 600);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -99,7 +113,6 @@ public class BillingWindow extends JFrame {
 
                     JOptionPane.showMessageDialog(BillingWindow.this, "Factura generada exitosamente en " + rutaArchivo, "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-                    // Enviar datos de la factura a ReportsWindow
                     if (reportsWindow != null) {
                         reportsWindow.setDatosFactura(
                                 nombreClienteField.getText(),
@@ -109,7 +122,7 @@ public class BillingWindow extends JFrame {
                                 nitCiField.getText(),
                                 getProductosAsString(cartData),
                                 Double.parseDouble(total.replace("Total: $", "").replace(",", ".")),
-                                "Usuario Actual" // Aquí deberías obtener el usuario actual del sistema
+                                "Usuario Actual"
                         );
                     }
                 } catch (IOException | DocumentException | NumberFormatException ex) {
@@ -122,16 +135,25 @@ public class BillingWindow extends JFrame {
         cancelarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose(); // Cierra la ventana de facturación
+                dispose();
             }
         });
     }
 
-    // Constructor vacío necesario para algunos usos
+    /**
+     * Constructor por defecto de {@code BillingWindow}.
+     * Utilizado para crear una instancia de la ventana sin inicializar los datos.
+     */
     public BillingWindow() {
     }
 
-    // Convierte los datos del carrito a una cadena legible
+    /**
+     * Convierte los datos del carrito en una cadena de texto para su visualización.
+     * El formato es: "producto - precio - Cantidad: cantidad".
+     *
+     * @param cartData Los datos del carrito (matriz bidimensional de objetos).
+     * @return Una cadena que representa los productos del carrito.
+     */
     private String getProductosAsString(Object[][] cartData) {
         StringBuilder sb = new StringBuilder();
         for (Object[] row : cartData) {

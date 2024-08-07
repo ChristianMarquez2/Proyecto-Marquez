@@ -8,11 +8,22 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * La clase {@code CartWindow} representa la ventana del carrito de compras en la aplicación.
+ * Permite visualizar, editar y eliminar productos en el carrito, así como proceder al pago.
+ * Extiende {@code JFrame} para proporcionar una ventana con una tabla que muestra los productos
+ * añadidos al carrito, y un panel para mostrar el total y proceder al pago.
+ */
 public class CartWindow extends JFrame {
     private JTable cartTable;
     private DefaultTableModel tableModel;
     private JLabel totalLabel;
 
+    /**
+     * Constructor de {@code CartWindow}.
+     * Inicializa la ventana del carrito de compras, configurando la tabla para mostrar los productos,
+     * el panel para mostrar el total y un botón para proceder al pago.
+     */
     public CartWindow() {
         setTitle("Carrito de Compras");
         setSize(900, 600);
@@ -68,14 +79,24 @@ public class CartWindow extends JFrame {
         tableModel.addTableModelListener(e -> updateTotal());
     }
 
-    // Método para añadir productos al carrito
+    /**
+     * Añade un producto al carrito con los detalles especificados.
+     *
+     * @param nombre   El nombre del producto.
+     * @param modelo   El modelo del producto.
+     * @param precio   El precio unitario del producto.
+     * @param cantidad La cantidad del producto.
+     */
     public void addProductToCart(String nombre, String modelo, double precio, int cantidad) {
         double total = precio * cantidad;
         tableModel.addRow(new Object[]{nombre, modelo, cantidad, precio, total, "Eliminar"});
         updateTotal();
     }
 
-    // Método para permitir cambiar la cantidad de productos
+    /**
+     * Configura el editor de celdas para la columna de cantidad,
+     * permitiendo que los usuarios editen la cantidad de productos en el carrito.
+     */
     private void setupQuantityEditor() {
         TableColumn quantityColumn = cartTable.getColumnModel().getColumn(2);
         quantityColumn.setCellEditor(new DefaultCellEditor(new JTextField()) {
@@ -91,7 +112,9 @@ public class CartWindow extends JFrame {
         });
     }
 
-    // Método para actualizar el total
+    /**
+     * Actualiza el total de la compra calculando la suma de los totales de todos los productos en el carrito.
+     */
     private void updateTotal() {
         double total = 0.0;
         for (int i = 0; i < tableModel.getRowCount(); i++) {
@@ -100,19 +123,29 @@ public class CartWindow extends JFrame {
         totalLabel.setText("Total: $" + String.format("%.2f", total));
     }
 
-    // Método para configurar el botón de eliminar
+    /**
+     * Configura la columna del botón de eliminar en la tabla,
+     * utilizando un renderer y un editor personalizados para manejar la eliminación de productos.
+     */
     private void setupDeleteButton() {
         cartTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonRenderer());
         cartTable.getColumnModel().getColumn(5).setCellEditor(new ButtonEditor(new JCheckBox()));
     }
 
-    // Método para abrir la ventana de facturación
+    /**
+     * Abre una ventana de facturación mostrando los datos actuales del carrito y el total.
+     */
     private void openInvoiceWindow() {
         InvoiceWindow invoiceWindow = new InvoiceWindow(getCartData(), totalLabel.getText());
         invoiceWindow.setVisible(true);
     }
 
-    // Método para obtener los datos del carrito
+    /**
+     * Obtiene los datos del carrito en formato de matriz de objetos.
+     * El formato es: producto, precio y cantidad.
+     *
+     * @return Una matriz bidimensional con los datos del carrito.
+     */
     private Object[][] getCartData() {
         int rowCount = tableModel.getRowCount();
         Object[][] data = new Object[rowCount][3];
@@ -124,7 +157,10 @@ public class CartWindow extends JFrame {
         return data;
     }
 
-    // Clase para el botón de eliminar
+    /**
+     * Clase interna {@code ButtonRenderer} que extiende {@code JButton} e implementa {@code TableCellRenderer}.
+     * Renderiza un botón en la columna de eliminar de la tabla.
+     */
     private class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
             setOpaque(true);
@@ -142,7 +178,10 @@ public class CartWindow extends JFrame {
         }
     }
 
-    // Clase para el editor del botón de eliminar
+    /**
+     * Clase interna {@code ButtonEditor} que extiende {@code DefaultCellEditor}.
+     * Maneja la edición del botón de eliminar en la tabla, permitiendo eliminar filas cuando se hace clic en el botón.
+     */
     private class ButtonEditor extends DefaultCellEditor {
         private JButton button;
         private String label;
@@ -200,6 +239,4 @@ public class CartWindow extends JFrame {
             super.fireEditingStopped();
         }
     }
-
-
 }

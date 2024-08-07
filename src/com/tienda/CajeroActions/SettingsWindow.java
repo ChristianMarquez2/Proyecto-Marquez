@@ -10,15 +10,23 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Ventana para gestionar la configuración del usuario, incluyendo nombre de usuario, contraseña, tema, idioma y notificaciones.
+ * Permite al usuario guardar cambios en la configuración y cancelar la edición.
+ */
 public class SettingsWindow extends JFrame {
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JComboBox<String> themeComboBox;
-    private JComboBox<String> languageComboBox;
-    private JCheckBox notificationsCheckBox;
-    private JButton saveButton;
-    private JButton cancelButton;
 
+    private JTextField usernameField; // Campo para el nombre de usuario
+    private JPasswordField passwordField; // Campo para la contraseña
+    private JComboBox<String> themeComboBox; // ComboBox para seleccionar el tema
+    private JComboBox<String> languageComboBox; // ComboBox para seleccionar el idioma
+    private JCheckBox notificationsCheckBox; // CheckBox para activar/desactivar notificaciones
+    private JButton saveButton; // Botón para guardar la configuración
+    private JButton cancelButton; // Botón para cancelar la edición
+
+    /**
+     * Constructor que configura la ventana de configuración.
+     */
     public SettingsWindow() {
         setTitle("Configuración");
         setSize(600, 400);
@@ -43,27 +51,27 @@ public class SettingsWindow extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Etiquetas y campos
+        // Etiquetas y campos del formulario
         String[] labels = {"Nombre de Usuario:", "Contraseña:", "Tema:", "Idioma:", "Notificaciones:"};
         Component[] fields = {usernameField, passwordField, themeComboBox, languageComboBox, notificationsCheckBox};
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.NONE;
 
-        // Agregar componentes al panel del formulario
+        // Configuración de los campos
         for (int i = 0; i < labels.length; i++) {
             JLabel label = new JLabel(labels[i]);
             formPanel.add(label, gbc);
             gbc.gridx = 1;
-            if (i == 1) { // Para la contraseña
+            if (i == 1) { // Campo para la contraseña
                 fields[i] = new JPasswordField(20);
-            } else if (i == 2) { // Para el tema
+            } else if (i == 2) { // ComboBox para el tema
                 fields[i] = new JComboBox<>(new String[]{"Claro", "Oscuro"});
-            } else if (i == 3) { // Para el idioma
+            } else if (i == 3) { // ComboBox para el idioma
                 fields[i] = new JComboBox<>(new String[]{"Español", "Inglés"});
-            } else if (i == 4) { // Para las notificaciones
+            } else if (i == 4) { // CheckBox para notificaciones
                 fields[i] = new JCheckBox();
-            } else {
+            } else { // Campo para el nombre de usuario
                 fields[i] = new JTextField(20);
             }
             formPanel.add(fields[i], gbc);
@@ -77,6 +85,7 @@ public class SettingsWindow extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
+        // Botón para guardar la configuración
         saveButton = new JButton("Guardar");
         saveButton.setFont(new Font("Arial", Font.BOLD, 14));
         saveButton.setForeground(Color.WHITE);
@@ -86,6 +95,7 @@ public class SettingsWindow extends JFrame {
         saveButton.setFocusPainted(false);
         buttonPanel.add(saveButton);
 
+        // Botón para cancelar la edición
         cancelButton = new JButton("Cancelar");
         cancelButton.setFont(new Font("Arial", Font.BOLD, 14));
         cancelButton.setForeground(Color.WHITE);
@@ -98,7 +108,7 @@ public class SettingsWindow extends JFrame {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         add(mainPanel);
 
-        // Acción para guardar cambios
+        // Acción para guardar la configuración cuando se presiona el botón
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,7 +116,7 @@ public class SettingsWindow extends JFrame {
             }
         });
 
-        // Acción para cancelar
+        // Acción para cancelar la edición y cerrar la ventana
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -115,6 +125,10 @@ public class SettingsWindow extends JFrame {
         });
     }
 
+    /**
+     * Guarda la configuración ingresada por el usuario en la base de datos.
+     * Valida las entradas antes de intentar guardar los datos.
+     */
     private void guardarConfiguracion() {
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
@@ -131,7 +145,7 @@ public class SettingsWindow extends JFrame {
         // Crear una conexión a la base de datos
         Connection connection = null;
         try {
-            connection = DatabaseUtils.getConnection(); // Implementa esta función para obtener la conexión
+            connection = DatabaseUtils.getConnection();
             ConfiguracionDAO configuracionDAO = new ConfiguracionDAO(connection);
 
             // Guardar la configuración
@@ -144,9 +158,10 @@ public class SettingsWindow extends JFrame {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
+            // Mostrar un mensaje de error si ocurre una excepción al conectar con la base de datos
             JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
-            // Cerrar la conexión
+            // Cerrar la conexión a la base de datos
             if (connection != null) {
                 try {
                     connection.close();

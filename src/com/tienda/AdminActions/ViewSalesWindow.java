@@ -10,11 +10,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Ventana para visualizar el historial de ventas en la tienda.
+ * Muestra una tabla con detalles de las ventas y permite actualizar la lista.
+ */
 public class ViewSalesWindow extends JFrame {
 
-    private JTable table;
-    private DefaultTableModel tableModel;
+    private JTable table; // Tabla para mostrar las ventas
+    private DefaultTableModel tableModel; // Modelo de la tabla
 
+    /**
+     * Constructor que configura la ventana para ver ventas.
+     */
     public ViewSalesWindow() {
         setTitle("Ver Ventas");
         setSize(900, 600);
@@ -32,6 +39,7 @@ public class ViewSalesWindow extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         tablePanel.add(scrollPane, BorderLayout.CENTER);
 
+        // Agregar columnas a la tabla
         tableModel.addColumn("ID");
         tableModel.addColumn("Nombre Cliente");
         tableModel.addColumn("Total");
@@ -51,27 +59,33 @@ public class ViewSalesWindow extends JFrame {
         buttonPanel.add(refreshButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Cargar datos de ventas al iniciar la ventana
+        // Cargar datos de ventas
         loadSales();
 
-        // Acción para actualizar datos
+        // Acción para actualizar datos cuando se presiona el botón
         refreshButton.addActionListener(e -> loadSales());
     }
 
+    /**
+     * Carga los datos de las ventas desde la base de datos y actualiza la tabla.
+     */
     private void loadSales() {
-        // Limpiar la tabla antes de cargar nuevos datos
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(0); // Limpiar la tabla antes de recargar los datos
 
         Connection connection = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
         try {
+            // Obtener la conexión a la base de datos
             connection = BaseDeDatos.getConnection();
+
+            // Consulta SQL para obtener las ventas ordenadas por fecha en orden descendente
             String query = "SELECT * FROM facturas ORDER BY fecha DESC";
             stmt = connection.prepareStatement(query);
             rs = stmt.executeQuery();
 
+            // Procesar el resultado de la consulta y agregar filas a la tabla
             while (rs.next()) {
                 tableModel.addRow(new Object[]{
                         rs.getInt("id"),
@@ -84,8 +98,10 @@ public class ViewSalesWindow extends JFrame {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            // Mostrar un mensaje de error si ocurre una excepción al cargar las ventas
             JOptionPane.showMessageDialog(this, "Error al cargar las ventas: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
+            // Cerrar los recursos de base de datos
             try {
                 if (rs != null) rs.close();
                 if (stmt != null) stmt.close();

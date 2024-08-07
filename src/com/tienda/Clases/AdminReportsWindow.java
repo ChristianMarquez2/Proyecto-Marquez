@@ -1,7 +1,5 @@
 package com.tienda.Clases;
 
-import com.tienda.Clases.BaseDeDatos;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,9 +9,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Ventana para mostrar y gestionar los reportes administrativos.
+ */
 public class AdminReportsWindow extends JFrame {
     private JTextArea reportsArea;
 
+    /**
+     * Constructor para inicializar la ventana de reportes administrativos.
+     */
     public AdminReportsWindow() {
         setTitle("Reportes Administrativos");
         setSize(800, 600);
@@ -21,33 +25,31 @@ public class AdminReportsWindow extends JFrame {
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadido margen
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Panel para el área de texto
         JPanel textPanel = new JPanel(new BorderLayout());
-        textPanel.setBorder(BorderFactory.createTitledBorder("Contenido de Reportes")); // Añadido título
+        textPanel.setBorder(BorderFactory.createTitledBorder("Contenido de Reportes"));
 
         reportsArea = new JTextArea();
         reportsArea.setEditable(false);
         reportsArea.setLineWrap(true);
         reportsArea.setWrapStyleWord(true);
-        reportsArea.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // Añadido borde
-        reportsArea.setBackground(new Color(250, 250, 250)); // Añadido color de fondo
+        reportsArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        reportsArea.setBackground(new Color(250, 250, 250));
         JScrollPane scrollPane = new JScrollPane(reportsArea);
         textPanel.add(scrollPane, BorderLayout.CENTER);
 
         mainPanel.add(textPanel, BorderLayout.CENTER);
 
-        // Panel para los botones
         JPanel buttonPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre botones
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         JButton loadReportsButton = new JButton("Cargar Reportes");
-        loadReportsButton.setBackground(new Color(0, 123, 255)); // Color de fondo
+        loadReportsButton.setBackground(new Color(0, 123, 255));
         loadReportsButton.setForeground(Color.WHITE); // Color de texto
         loadReportsButton.setFocusPainted(false);
-        loadReportsButton.setPreferredSize(new Dimension(150, 40)); // Tamaño preferido
+        loadReportsButton.setPreferredSize(new Dimension(150, 40));
         loadReportsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,10 +58,10 @@ public class AdminReportsWindow extends JFrame {
         });
 
         JButton saveReportsButton = new JButton("Guardar Reportes");
-        saveReportsButton.setBackground(new Color(0, 123, 255)); // Color de fondo
-        saveReportsButton.setForeground(Color.WHITE); // Color de texto
+        saveReportsButton.setBackground(new Color(0, 123, 255));
+        saveReportsButton.setForeground(Color.WHITE);
         saveReportsButton.setFocusPainted(false);
-        saveReportsButton.setPreferredSize(new Dimension(150, 40)); // Tamaño preferido
+        saveReportsButton.setPreferredSize(new Dimension(150, 40));
         saveReportsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -80,6 +82,9 @@ public class AdminReportsWindow extends JFrame {
         add(mainPanel);
     }
 
+    /**
+     * Carga los reportes desde la base de datos y los muestra en el área de texto.
+     */
     private void cargarReportes() {
         StringBuilder sb = new StringBuilder();
         String sql = "SELECT * FROM facturas ORDER BY fecha DESC";
@@ -110,9 +115,10 @@ public class AdminReportsWindow extends JFrame {
         }
     }
 
+    /**
+     * Muestra un mensaje indicando que la funcionalidad para guardar reportes no está implementada.
+     */
     private void guardarReportes() {
-        // Aquí puedes implementar la lógica para guardar los reportes si es necesario.
-        // Esto es solo un ejemplo básico de cómo podrías hacerlo.
         JOptionPane.showMessageDialog(this, "Funcionalidad de guardar reportes no implementada", "Información", JOptionPane.INFORMATION_MESSAGE);
     }
 }

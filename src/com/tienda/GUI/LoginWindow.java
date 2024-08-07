@@ -2,7 +2,6 @@ package com.tienda.GUI;
 
 import com.tienda.Clases.Administrador;
 import com.tienda.Clases.UsuarioDAO;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,50 +12,48 @@ public class LoginWindow extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton iniciarSesionButton;
+    private JLabel cellTechHubLabel;
+    private JLabel usuarioLabel;
+    private JLabel contraseñaLabel;
+    private JLabel INICIARSESIÓNLabel;
 
     public LoginWindow() {
-        // Configuración del JFrame
         setTitle("Acceso al Sistema");
         setSize(400, 300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Crear el panel para el logo
         JPanel logoPanel = new JPanel();
-        // Redimensionar el logo
         ImageIcon originalLogo = new ImageIcon("src/com/tienda/Imagenes/LogoCell.png");
         Image logoImage = originalLogo.getImage().getScaledInstance(300, 100, Image.SCALE_SMOOTH); // Ajusta el tamaño aquí
         JLabel logoLabel = new JLabel(new ImageIcon(logoImage));
         logoPanel.add(logoLabel);
         add(logoPanel, BorderLayout.NORTH);
 
-        // Crear el panel principal para los campos de texto y el botón
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre componentes
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         // Usuario
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
         JLabel userLabel = new JLabel("Usuario:");
-        userLabel.setIcon(new ImageIcon("src/com/tienda/Imagenes/user_icon.png")); // Icono de usuario
+        userLabel.setIcon(new ImageIcon("src/com/tienda/Imagenes/user_icon.png"));
         panel.add(userLabel, gbc);
-
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.WEST;
         usernameField = new JTextField(15);
         panel.add(usernameField, gbc);
 
-        // Contraseña
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.EAST;
         JLabel passwordLabel = new JLabel("Contraseña:");
-        passwordLabel.setIcon(new ImageIcon("src/com/tienda/Imagenes/password_icon.png")); // Icono de contraseña
+        passwordLabel.setIcon(new ImageIcon("src/com/tienda/Imagenes/password_icon.png"));
         panel.add(passwordLabel, gbc);
 
         gbc.gridx = 1;
@@ -112,21 +109,16 @@ public class LoginWindow extends JFrame {
 
                 if (rol != null) {
                     if (rol.equals("Cajero")) {
-                        // Abrir la ventana principal para Cajero y cerrar la ventana de login
                         new MainMenuWindow(username).setVisible(true);
                     } else if (rol.equals("Administrador")) {
-                        // Obtener el objeto Administrador completo
                         Administrador administrador = usuarioDAO.obtenerAdministradorPorNombre(username);
-                        // Abrir la ventana principal para Administrador y cerrar la ventana de login
                         new AdminMenuWindow(administrador).setVisible(true);
                     }
                     dispose();
                 } else {
-                    // Mostrar mensaje de error
                     JOptionPane.showMessageDialog(LoginWindow.this, "Credenciales incorrectas", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (SQLException ex) {
-                // Mostrar mensaje de error en caso de excepción
                 JOptionPane.showMessageDialog(LoginWindow.this, "Error al conectar con la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }

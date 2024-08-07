@@ -8,15 +8,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Ventana de interfaz gráfica para agregar un nuevo producto a la base de datos.
+ *
+ * <p>Proporciona un formulario para ingresar la información del producto, incluyendo nombre, precio, stock, marca, modelo e imagen.</p>
+ *
+ * <p>Permite guardar el producto en la base de datos o cancelar la operación.</p>
+ *
+ * @since 1.0
+ */
 public class AddProductWindow extends JFrame {
 
     private JTextField nameField, priceField, stockField, brandField, modelField, imageField;
     private JButton saveButton, cancelButton;
 
+    /**
+     * Crea una nueva instancia de {@code AddProductWindow}.
+     * <p>Inicializa la ventana con los componentes necesarios para agregar un producto, incluyendo campos de texto y botones.</p>
+     */
     public AddProductWindow() {
         setTitle("Agregar Producto");
         setSize(500, 400);
@@ -83,7 +95,7 @@ public class AddProductWindow extends JFrame {
         cancelButton = new JButton("Cancelar");
         cancelButton.setFont(new Font("Arial", Font.BOLD, 14));
         cancelButton.setForeground(Color.WHITE);
-        cancelButton.setBackground(new Color(0, 122, 255)); // Azul
+        cancelButton.setBackground(new Color(0, 122, 255));
         cancelButton.setOpaque(true);
         cancelButton.setBorderPainted(false);
         cancelButton.setFocusPainted(false);
@@ -104,11 +116,16 @@ public class AddProductWindow extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose(); // Cerrar la ventana
+                dispose();
             }
         });
     }
 
+    /**
+     * Guarda el producto en la base de datos.
+     * <p>Obtiene el ID de la marca desde la base de datos y luego inserta el nuevo producto con la información proporcionada en los campos del formulario.</p>
+     * <p>En caso de éxito, muestra un mensaje de éxito y cierra la ventana. En caso de error, muestra un mensaje de error.</p>
+     */
     private void saveProduct() {
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -118,7 +135,6 @@ public class AddProductWindow extends JFrame {
         try {
             connection = BaseDeDatos.getConnection();
 
-            // Obtener el id de la marca
             String queryBrand = "SELECT id FROM marcas WHERE nombre = ?";
             stmtBrand = connection.prepareStatement(queryBrand);
             stmtBrand.setString(1, brandField.getText());

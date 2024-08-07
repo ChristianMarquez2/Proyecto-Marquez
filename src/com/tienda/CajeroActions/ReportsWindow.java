@@ -1,7 +1,6 @@
 package com.tienda.CajeroActions;
 
 import com.tienda.Clases.BaseDeDatos;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,17 +10,43 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Ventana para la visualización y gestión de reportes de facturas en la aplicación.
+ * Permite cargar y guardar reportes desde la base de datos.
+ */
 public class ReportsWindow extends JFrame {
+
+    /** Área de texto para mostrar los reportes cargados. */
     private JTextArea reportsArea;
+
+    /** Nombre del cliente asociado con el reporte. */
     private String nombreCliente;
+
+    /** Dirección del cliente asociada con el reporte. */
     private String direccion;
+
+    /** Teléfono del cliente asociado con el reporte. */
     private String telefono;
+
+    /** Email del cliente asociado con el reporte. */
     private String email;
+
+    /** Número de NIT o CI del cliente asociado con el reporte. */
     private String nitCi;
+
+    /** Productos incluidos en el reporte. */
     private String productos;
+
+    /** Total de la factura en el reporte. */
     private double total;
+
+    /** Usuario que generó el reporte. */
     private String usuario;
 
+    /**
+     * Crea una nueva instancia de la ventana de reportes.
+     * Configura el título, tamaño y el diseño de la ventana.
+     */
     public ReportsWindow() {
         setTitle("Reportes");
         setSize(800, 600);
@@ -29,18 +54,18 @@ public class ReportsWindow extends JFrame {
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Añadido margen
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Panel para el área de texto
         JPanel textPanel = new JPanel(new BorderLayout());
-        textPanel.setBorder(BorderFactory.createTitledBorder("Contenido de Reportes")); // Añadido título
+        textPanel.setBorder(BorderFactory.createTitledBorder("Contenido de Reportes"));
 
         reportsArea = new JTextArea();
         reportsArea.setEditable(false);
         reportsArea.setLineWrap(true);
         reportsArea.setWrapStyleWord(true);
-        reportsArea.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // Añadido borde
-        reportsArea.setBackground(new Color(250, 250, 250)); // Añadido color de fondo
+        reportsArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        reportsArea.setBackground(new Color(250, 250, 250));
         JScrollPane scrollPane = new JScrollPane(reportsArea);
         textPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -49,13 +74,13 @@ public class ReportsWindow extends JFrame {
         // Panel para los botones
         JPanel buttonPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10); // Espaciado entre botones
+        gbc.insets = new Insets(10, 10, 10, 10);
 
         JButton loadReportsButton = new JButton("Cargar Reportes");
-        loadReportsButton.setBackground(new Color(0, 123, 255)); // Color de fondo
+        loadReportsButton.setBackground(new Color(0, 123, 255));
         loadReportsButton.setForeground(Color.WHITE); // Color de texto
         loadReportsButton.setFocusPainted(false);
-        loadReportsButton.setPreferredSize(new Dimension(150, 40)); // Tamaño preferido
+        loadReportsButton.setPreferredSize(new Dimension(150, 40));
         loadReportsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -64,10 +89,10 @@ public class ReportsWindow extends JFrame {
         });
 
         JButton saveReportsButton = new JButton("Guardar Reportes");
-        saveReportsButton.setBackground(new Color(0, 123, 255)); // Color de fondo
-        saveReportsButton.setForeground(Color.WHITE); // Color de texto
+        saveReportsButton.setBackground(new Color(0, 123, 255));
+        saveReportsButton.setForeground(Color.WHITE);
         saveReportsButton.setFocusPainted(false);
-        saveReportsButton.setPreferredSize(new Dimension(150, 40)); // Tamaño preferido
+        saveReportsButton.setPreferredSize(new Dimension(150, 40));
         saveReportsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,6 +113,18 @@ public class ReportsWindow extends JFrame {
         add(mainPanel);
     }
 
+    /**
+     * Establece los datos de la factura que se utilizarán para guardar un reporte.
+     *
+     * @param nombreCliente Nombre del cliente asociado con el reporte.
+     * @param direccion Dirección del cliente asociado con el reporte.
+     * @param telefono Teléfono del cliente asociado con el reporte.
+     * @param email Email del cliente asociado con el reporte.
+     * @param nitCi Número de NIT o CI del cliente asociado con el reporte.
+     * @param productos Productos incluidos en el reporte.
+     * @param total Total de la factura en el reporte.
+     * @param usuario Usuario que generó el reporte.
+     */
     public void setDatosFactura(String nombreCliente, String direccion, String telefono, String email, String nitCi, String productos, double total, String usuario) {
         this.nombreCliente = nombreCliente;
         this.direccion = direccion;
@@ -99,6 +136,10 @@ public class ReportsWindow extends JFrame {
         this.usuario = usuario;
     }
 
+    /**
+     * Carga los reportes desde la base de datos y los muestra en el área de texto.
+     * Los reportes incluyen información sobre el cliente, productos y total.
+     */
     private void cargarReportes() {
         StringBuilder sb = new StringBuilder();
         Connection connection = null;
@@ -143,6 +184,12 @@ public class ReportsWindow extends JFrame {
         reportsArea.setText(sb.toString());
     }
 
+    /**
+     * Guarda el reporte actual en la base de datos.
+     * Utiliza los datos establecidos mediante el método {@link #setDatosFactura}.
+     * Muestra un mensaje de éxito si el reporte se guarda correctamente,
+     * o un mensaje de error si ocurre un problema.
+     */
     private void guardarReportes() {
         Connection connection = null;
         PreparedStatement stmt = null;
@@ -179,5 +226,4 @@ public class ReportsWindow extends JFrame {
             }
         }
     }
-
 }

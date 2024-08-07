@@ -4,7 +4,15 @@ import com.tienda.CajeroActions.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-
+/**
+ * Ventana principal de la aplicación de tienda que muestra el menú de navegación principal.
+ * Esta ventana permite al usuario acceder a diferentes secciones como productos, configuración,
+ * carrito y reportes. También incluye un botón para cerrar la aplicación.
+ *
+ * <p>Dependiendo del rol del usuario, algunos botones pueden estar habilitados o deshabilitados.</p>
+ *
+ * @since 1.0
+ */
 public class MainMenuWindow extends JFrame {
     private String userRole;
     private JPanel navigationPanel;
@@ -17,6 +25,11 @@ public class MainMenuWindow extends JFrame {
     private JLabel logoLabel;
     private CartWindow cartWindow;
 
+    /**
+     * Crea una nueva ventana del menú principal.
+     *
+     * @param userRole El rol del usuario que accede a la ventana, determina qué funcionalidades están disponibles.
+     */
     public MainMenuWindow(String userRole) {
         this.userRole = userRole;
         setTitle("Menú Principal - CellTechHub");
@@ -34,9 +47,9 @@ public class MainMenuWindow extends JFrame {
 
         // Panel superior para el título y el logo
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(new Color(30, 144, 255)); // Azul oscuro
+        topPanel.setBackground(new Color(30, 144, 255));
 
-        ImageIcon logoIcon = new ImageIcon("src/com/tienda/Imagenes/LogoCell.png"); // Ruta al archivo del logo
+        ImageIcon logoIcon = new ImageIcon("src/com/tienda/Imagenes/LogoCell.png");
         logoLabel = new JLabel(logoIcon);
         topPanel.add(logoLabel, BorderLayout.WEST);
 
@@ -81,22 +94,28 @@ public class MainMenuWindow extends JFrame {
         logoutButton.addActionListener(e -> System.exit(0));
         navigationPanel.add(logoutButton);
 
-        // Agregar paneles al marco
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(navigationPanel, BorderLayout.CENTER);
         add(mainPanel);
     }
 
+    /**
+     * Crea un botón de navegación con el texto especificado y el icono asociado.
+     *
+     * @param text El texto que se mostrará en el botón.
+     * @param iconPath La ruta al archivo de imagen del icono del botón.
+     * @return El botón de navegación creado.
+     */
     private JButton createNavigationButton(String text, String iconPath) {
         JButton button = new JButton(text);
-        button.setIcon(createScaledIcon(iconPath, 40, 40)); // Escalar icono a 40x40 píxeles
+        button.setIcon(createScaledIcon(iconPath, 40, 40));
         button.setHorizontalAlignment(SwingConstants.CENTER);
         button.setHorizontalTextPosition(SwingConstants.CENTER);
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
-        button.setPreferredSize(new Dimension(180, 80)); // Ajusta el tamaño para acomodar el texto e icono
+        button.setPreferredSize(new Dimension(180, 80));
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBackground(new Color(240, 240, 240));
-        button.setBorder(createRoundedBorder(15)); // Bordes redondeados
+        button.setBorder(createRoundedBorder(15));
         button.setFocusPainted(false);
         button.addActionListener(e -> {
             switch (text) {
@@ -117,28 +136,42 @@ public class MainMenuWindow extends JFrame {
         return button;
     }
 
+    /**
+     * Crea un {@link ImageIcon} redimensionado a las dimensiones especificadas.
+     *
+     * @param imagePath La ruta al archivo de imagen.
+     * @param width El ancho de la imagen redimensionada.
+     * @param height La altura de la imagen redimensionada.
+     * @return El {@link ImageIcon} redimensionado.
+     */
     private ImageIcon createScaledIcon(String imagePath, int width, int height) {
-        // Carga la imagen original
         ImageIcon originalIcon = new ImageIcon(imagePath);
         Image image = originalIcon.getImage();
-        // Escala la imagen al tamaño deseado
         Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        // Crea un nuevo ImageIcon con la imagen escalada
         return new ImageIcon(scaledImage);
     }
 
+    /**
+     * Crea un borde redondeado con el radio especificado.
+     *
+     * @param radius El radio del borde redondeado.
+     * @return El borde redondeado creado.
+     */
     private Border createRoundedBorder(int radius) {
         return new RoundedBorder(radius);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MainMenuWindow("Admin").setVisible(true));
-    }
-
-    // Clase interna para bordes redondeados
+    /**
+     * Clase interna para crear un borde redondeado.
+     */
     private static class RoundedBorder implements Border {
         private int radius;
 
+        /**
+         * Crea un borde redondeado con el radio especificado.
+         *
+         * @param radius El radio del borde redondeado.
+         */
         RoundedBorder(int radius) {
             this.radius = radius;
         }
@@ -157,5 +190,14 @@ public class MainMenuWindow extends JFrame {
         public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
+    }
+
+    /**
+     * Método principal para ejecutar la aplicación.
+     *
+     * @param args Argumentos de línea de comandos.
+     */
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new MainMenuWindow("Admin").setVisible(true));
     }
 }
