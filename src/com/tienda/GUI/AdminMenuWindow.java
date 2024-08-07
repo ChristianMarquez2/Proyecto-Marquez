@@ -67,23 +67,23 @@ public class AdminMenuWindow extends JFrame {
         navigationPanel.setBackground(Color.WHITE);
 
         // Botones de navegación
-        productButton = createNavigationButton("Ver Productos", "src/com/tienda/Imagenes/product_icon.png", e -> new ViewProductsWindow().setVisible(true));
-        addProductButton = createNavigationButton("Agregar Producto", "src/com/tienda/Imagenes/add_product_icon.png", e -> new AddProductWindow().setVisible(true));
+        productButton = createNavigationButton("Ver Productos", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\Admin\\verproducto.png", e -> new ViewProductsWindow().setVisible(true));
+        addProductButton = createNavigationButton("Agregar Producto", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\Admin\\agregar.png", e -> new AddProductWindow().setVisible(true));
         navigationPanel.add(productButton);
         navigationPanel.add(addProductButton);
 
-        viewSalesButton = createNavigationButton("Ver Ventas", "src/com/tienda/Imagenes/view_sales_icon.png", e -> new ViewSalesWindow().setVisible(true));
-        adminReportsButton = createNavigationButton("Reportes Administrativos", "src/com/tienda/Imagenes/admin_reports_icon.png", e -> new AdminReportsWindow().setVisible(true));
+        viewSalesButton = createNavigationButton("Ver Ventas", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\Admin\\verventas.png", e -> new ViewSalesWindow().setVisible(true));
+        adminReportsButton = createNavigationButton("Reportes Administrativos", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\Admin\\reportes.png", e -> new AdminReportsWindow().setVisible(true));
         navigationPanel.add(viewSalesButton);
         navigationPanel.add(adminReportsButton);
 
-        addUserButton = createNavigationButton("Agregar Usuario", "src/com/tienda/Imagenes/add_user_icon.png", e -> new AddUserWindow().setVisible(true));
-        deleteUserButton = createNavigationButton("Eliminar Usuario", "src/com/tienda/Imagenes/delete_user_icon.png", e -> new DeleteUserWindow().setVisible(true));
+        addUserButton = createNavigationButton("Agregar Usuario", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\Admin\\agregar-usuario.png", e -> new AddUserWindow().setVisible(true));
+        deleteUserButton = createNavigationButton("Eliminar Usuario", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\Admin\\borrar.png", e -> new DeleteUserWindow().setVisible(true));
         navigationPanel.add(addUserButton);
         navigationPanel.add(deleteUserButton);
 
-        settingsButton = createNavigationButton("Configuración", "src/com/tienda/Imagenes/settings_icon.png", e -> new SettingsWindow().setVisible(true));
-        logoutButton = createNavigationButton("Salir", "src/com/tienda/Imagenes/logout_icon.png", e -> System.exit(0));
+        settingsButton = createNavigationButton("Configuración", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\Admin\\configuracion.png", e -> new SettingsWindow().setVisible(true));
+        logoutButton = createNavigationButton("Salir", "C:\\Users\\Christian\\IdeaProjects\\Proyecto-Marquez\\src\\com\\tienda\\Imagenes\\Admin\\salir.png", e -> System.exit(0));
         navigationPanel.add(settingsButton);
         navigationPanel.add(logoutButton);
 
@@ -97,7 +97,7 @@ public class AdminMenuWindow extends JFrame {
     // Método auxiliar para crear botones de navegación con iconos
     private JButton createNavigationButton(String text, String iconPath, ActionListener actionListener) {
         JButton button = new JButton(text);
-        button.setIcon(new ImageIcon(iconPath));
+        button.setIcon(createScaledIcon(iconPath, 30, 30)); // Redimensiona el icono a 30x30 píxeles
         button.setHorizontalAlignment(SwingConstants.LEFT);
         button.setPreferredSize(new Dimension(200, 50)); // Tamaño ajustado
         button.setFont(new Font("Arial", Font.BOLD, 16));
@@ -106,6 +106,16 @@ public class AdminMenuWindow extends JFrame {
         button.setFocusPainted(false);
         button.addActionListener(actionListener);
         return button;
+    }
+
+    private ImageIcon createScaledIcon(String imagePath, int width, int height) {
+        // Carga la imagen original
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image image = originalIcon.getImage();
+        // Escala la imagen al tamaño deseado
+        Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        // Crea un nuevo ImageIcon con la imagen escalada
+        return new ImageIcon(scaledImage);
     }
 
     private Border createRoundedBorder(int radius) {

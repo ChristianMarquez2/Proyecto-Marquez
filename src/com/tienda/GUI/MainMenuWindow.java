@@ -9,7 +9,7 @@ public class MainMenuWindow extends JFrame {
     private String userRole;
     private JPanel navigationPanel;
     private JButton productButton;
-    private JButton settingsButton; // Nuevo botón de configuración
+    private JButton settingsButton;
     private JButton cartButton;
     private JButton reportsButton;
     private JButton logoutButton;
@@ -57,21 +57,22 @@ public class MainMenuWindow extends JFrame {
         navigationPanel.setBackground(Color.WHITE);
 
         // Botones de navegación
-        productButton = createNavigationButton("Productos", "src/com/tienda/Imagenes/product_icon.png");
+        productButton = createNavigationButton("Productos", "src/com/tienda/Imagenes/cajero/productos.png");
         navigationPanel.add(productButton);
 
-        settingsButton = createNavigationButton("Configuración", "src/com/tienda/Imagenes/settings_icon.png");
+        settingsButton = createNavigationButton("Configuración", "src/com/tienda/Imagenes/cajero/configuracion.png");
         navigationPanel.add(settingsButton);
 
-        cartButton = createNavigationButton("Carrito", "src/com/tienda/Imagenes/cart_icon.png");
+        cartButton = createNavigationButton("Carrito", "src/com/tienda/Imagenes/cajero/carrito.png");
         navigationPanel.add(cartButton);
 
-        reportsButton = createNavigationButton("Reportes", "src/com/tienda/Imagenes/reports_icon.png");
+        reportsButton = createNavigationButton("Reportes", "src/com/tienda/Imagenes/cajero/informe.png");
         navigationPanel.add(reportsButton);
 
         // Botón de Salir
         logoutButton = new JButton("Salir");
-        logoutButton.setIcon(new ImageIcon("src/com/tienda/Imagenes/logout_icon.png")); // Ruta al icono de salir
+        String logoutImagePath = "src/com/tienda/Imagenes/cajero/salir.png";
+        logoutButton.setIcon(createScaledIcon(logoutImagePath, 20, 20));
         logoutButton.setFont(new Font("Arial", Font.BOLD, 16));
         logoutButton.setBackground(new Color(255, 69, 58));
         logoutButton.setForeground(Color.WHITE);
@@ -83,15 +84,16 @@ public class MainMenuWindow extends JFrame {
         // Agregar paneles al marco
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(navigationPanel, BorderLayout.CENTER);
-
         add(mainPanel);
     }
 
     private JButton createNavigationButton(String text, String iconPath) {
         JButton button = new JButton(text);
-        button.setIcon(new ImageIcon(iconPath));
-        button.setHorizontalAlignment(SwingConstants.LEFT);
-        button.setPreferredSize(new Dimension(180, 40)); // Tamaño ajustado
+        button.setIcon(createScaledIcon(iconPath, 40, 40)); // Escalar icono a 40x40 píxeles
+        button.setHorizontalAlignment(SwingConstants.CENTER);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+        button.setPreferredSize(new Dimension(180, 80)); // Ajusta el tamaño para acomodar el texto e icono
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setBackground(new Color(240, 240, 240));
         button.setBorder(createRoundedBorder(15)); // Bordes redondeados
@@ -102,7 +104,7 @@ public class MainMenuWindow extends JFrame {
                     new ProductSelectionWindow(cartWindow).setVisible(true);
                     break;
                 case "Configuración":
-                    new SettingsWindow().setVisible(true); // Cambiado para abrir SettingsWindow
+                    new SettingsWindow().setVisible(true);
                     break;
                 case "Carrito":
                     cartWindow.setVisible(true);
@@ -113,6 +115,16 @@ public class MainMenuWindow extends JFrame {
             }
         });
         return button;
+    }
+
+    private ImageIcon createScaledIcon(String imagePath, int width, int height) {
+        // Carga la imagen original
+        ImageIcon originalIcon = new ImageIcon(imagePath);
+        Image image = originalIcon.getImage();
+        // Escala la imagen al tamaño deseado
+        Image scaledImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        // Crea un nuevo ImageIcon con la imagen escalada
+        return new ImageIcon(scaledImage);
     }
 
     private Border createRoundedBorder(int radius) {
