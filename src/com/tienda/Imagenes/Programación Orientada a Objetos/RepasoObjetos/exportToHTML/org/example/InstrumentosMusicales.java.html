@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>InstrumentosMusicales.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+InstrumentosMusicales.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">org</span><span class="s2">.</span><span class="s1">example</span><span class="s2">;</span>
+<span class="s0">public class </span><span class="s1">InstrumentosMusicales </span><span class="s2">{</span>
+        <span class="s1">String categoria</span><span class="s2">;</span>
+        <span class="s1">String nombre</span><span class="s2">;</span>
+        <span class="s1">String materiasl</span><span class="s2">;</span>
+        <span class="s1">Double precio</span><span class="s2">;</span>
+        <span class="s1">Double tamanio</span><span class="s2">;</span>
+
+        <span class="s0">public </span><span class="s1">InstrumentosMusicales</span><span class="s2">() {</span>
+        <span class="s2">}</span>
+        <span class="s0">public </span><span class="s1">InstrumentosMusicales</span><span class="s2">(</span><span class="s1">String categoria</span><span class="s2">, </span><span class="s1">String nombre</span><span class="s2">, </span><span class="s1">String materiasl</span><span class="s2">, </span><span class="s1">Double precio</span><span class="s2">, </span><span class="s1">Double tamanio</span><span class="s2">) {</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">categoria </span><span class="s2">= </span><span class="s1">categoria</span><span class="s2">;</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">nombre </span><span class="s2">= </span><span class="s1">nombre</span><span class="s2">;</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">materiasl </span><span class="s2">= </span><span class="s1">materiasl</span><span class="s2">;</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">precio </span><span class="s2">= </span><span class="s1">precio</span><span class="s2">;</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">tamanio </span><span class="s2">= </span><span class="s1">tamanio</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        <span class="s3">//Metodos</span>
+        <span class="s0">public void </span><span class="s1">sonar</span><span class="s2">(){</span>
+                <span class="s3">//Aqui la funcion que permite sonar el instrumento musical</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;El sonido es... &quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">public </span><span class="s1">Boolean entretener</span><span class="s2">(){</span>
+                <span class="s3">//Una funcion que me permite saber si entretiene o no</span>
+                <span class="s0">return true</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public </span><span class="s1">String getCategoria</span><span class="s2">() {</span>
+                <span class="s0">return </span><span class="s1">categoria</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public void </span><span class="s1">setCategoria</span><span class="s2">(</span><span class="s1">String categoria</span><span class="s2">) {</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">categoria </span><span class="s2">= </span><span class="s1">categoria</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public </span><span class="s1">String getNombre</span><span class="s2">() {</span>
+                <span class="s0">return </span><span class="s1">nombre</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public void </span><span class="s1">setNombre</span><span class="s2">(</span><span class="s1">String nombre</span><span class="s2">) {</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">nombre </span><span class="s2">= </span><span class="s1">nombre</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public </span><span class="s1">String getMateriasl</span><span class="s2">() {</span>
+                <span class="s0">return </span><span class="s1">materiasl</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public void </span><span class="s1">setMateriasl</span><span class="s2">(</span><span class="s1">String materiasl</span><span class="s2">) {</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">materiasl </span><span class="s2">= </span><span class="s1">materiasl</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public </span><span class="s1">Double getPrecio</span><span class="s2">() {</span>
+                <span class="s0">return </span><span class="s1">precio</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public void </span><span class="s1">setPrecio</span><span class="s2">(</span><span class="s1">Double precio</span><span class="s2">) {</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">precio </span><span class="s2">= </span><span class="s1">precio</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public </span><span class="s1">Double getTamanio</span><span class="s2">() {</span>
+                <span class="s0">return </span><span class="s1">tamanio</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">public void </span><span class="s1">setTamanio</span><span class="s2">(</span><span class="s1">Double tamanio</span><span class="s2">) {</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">tamanio </span><span class="s2">= </span><span class="s1">tamanio</span><span class="s2">;</span>
+        <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
